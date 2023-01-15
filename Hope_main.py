@@ -26,6 +26,8 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
         self.ui.refresh_ports_button.clicked.connect(self.refresh_ports)
         self.ui.connect_button.clicked.connect(self.connect)
 
+
+
     # Populate the available ports
     def populate_ports(self):
         """
