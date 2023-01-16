@@ -26,6 +26,11 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
         self.ui.refresh_ports_button.clicked.connect(self.refresh_ports)
         self.ui.connect_button.clicked.connect(self.connect)
 
+        # Declaring start, mid, and end marker for sending code to Arduino / Arduino에 코드를 보내기 위한 시작, 중간 및 끝 마커 선언
+        self.startMarker = 60  # <
+        self.endMarker = 62  # ,F,0.0>
+        self.midMarker = 44  # ,
+
 
 
     # Populate the available ports
@@ -104,13 +109,40 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
 
                 self.ui.connect_button.setEnabled(False)
                 time.sleep(3)
-                self.statusBar().showMessage("Successfully connected to board.")
+                self.statusBar().showMessage("아두이노와 연결이 되었습니다. ")
             except:
-                self.statusBar().showMessage("Cannot connect to board. Try again..")
+                self.statusBar().showMessage("아두이노와 연결이 되지 않았습니다.")
                 raise CannotConnectException
         except AttributeError:
-            self.statusBar().showMessage("Please plug in the board and select a proper port, then press connect.")
+            self.statusBar().showMessage("보드를 연결 시킨 후 정확하게 포트와 연결하세요.")
 
+    def recvPositionArduino(self):    #distance 기능 ??
+        startMarker = self.startMarker
+        midMarker = self.midMarker
+        endMarker = self.endMarker
+
+        ck = ""
+        x = "z"  # any value that is not an end- or startMarker
+
+        # wait for the start character
+        while ord(x) != startMarker:
+            x = self.serial.read()
+
+        # save data until the end marker is found
+        while ord(x) != endMarker:
+            if ord(x) == midMarker:
+                print(ck)
+                self.ui.position_x.display(ck)
+                ck = ""
+                x = self.serial.read()
+
+            if ord(x) != startMarker:
+                # print(x)
+                ck = ck + x.decode()
+
+            x = self.serial.read()
+
+        return (ck)
 
 def main():
     import sys
