@@ -32,6 +32,9 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
         self.midMarker = 44  # ,
 
 
+        #이것은 예제입니다.
+
+
 
     # Populate the available ports
     def populate_ports(self):
