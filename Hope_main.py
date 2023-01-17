@@ -14,7 +14,6 @@ class CannotConnectException(Exception):
     pass
 
 
-
 class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
     def __init__(self):
         super(UI_Window, self).__init__()
@@ -162,4 +161,6 @@ def main():
 if __name__ == "__main__":
     main()
 
-    #이것은 의미없는 글귀
+
+class Nothing: #의미없는 클래스 pull
+    pass
