@@ -146,8 +146,6 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
         return (ck)
 
 
-
-
 def main():
     import sys
     app = QtWidgets.QApplication(sys.argv)
