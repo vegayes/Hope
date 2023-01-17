@@ -9,8 +9,9 @@ from PyQt5 import QtWidgets
 import Hope_UI
 from Hope_UI import Ui_HOPE
 
+
 class CannotConnectException(Exception):
-	pass
+    pass
 
 
 class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
@@ -30,11 +31,6 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
         self.startMarker = 60  # <
         self.endMarker = 62  # ,F,0.0>
         self.midMarker = 44  # ,
-
-
-        #이것은 예제입니다.
-
-
 
     # Populate the available ports
     def populate_ports(self):
@@ -115,11 +111,12 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
                 self.statusBar().showMessage("아두이노와 연결이 되었습니다. ")
             except:
                 self.statusBar().showMessage("아두이노와 연결이 되지 않았습니다.")
+                print("아두이노와 연결이 되지 않았습니다.")
                 raise CannotConnectException
         except AttributeError:
             self.statusBar().showMessage("보드를 연결 시킨 후 정확하게 포트와 연결하세요.")
 
-    def recvPositionArduino(self):    #distance 기능 ??
+    def recvPositionArduino(self):  # distance 기능 ??
         startMarker = self.startMarker
         midMarker = self.midMarker
         endMarker = self.endMarker
@@ -146,6 +143,7 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
             x = self.serial.read()
 
         return (ck)
+
 
 def main():
     import sys
