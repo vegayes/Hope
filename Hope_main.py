@@ -14,6 +14,7 @@ class CannotConnectException(Exception):
     pass
 
 
+
 class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
     def __init__(self):
         super(UI_Window, self).__init__()
