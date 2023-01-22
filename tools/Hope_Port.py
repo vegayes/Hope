@@ -7,13 +7,17 @@ from PyQt5 import QtWidgets
 import Hope_UI, Hope_main
 
 
-# Todo
-# 1. statusBar 만들기
 class port_hope:
 
     def __init__(self, main: Hope_main.UI_Window, ui: Hope_UI.Ui_HOPE):
         self.main = main
         self.ui = ui
+        self.init_start()
+
+    def init_start(self):
+        self.populate_ports()
+        self.__set_port()
+        self.ui.refresh_ports_button.clicked.connect(self.refresh_ports)
 
     def populate_ports(self):
         print("Serial Port 찾는 중... ")
@@ -42,7 +46,10 @@ class port_hope:
         self.main.statusBar().showMessage("You clicked REFRESH PORTS")
         self.ui.serial_port_combo.clear()
         self.populate_ports()
-        self.set_port()
+        self.__set_port()
 
-    def set_port(self):
+    def __set_port(self):
         self.port = self.ui.serial_port_combo.currentText()
+
+    def get_port(self):
+        return self.port
