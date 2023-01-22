@@ -38,7 +38,8 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
             port_declared = self.port in vars()
             try:
                 from tools import Hope_Arduino
-                self.arduino = Hope_Arduino.arduino_hope(self, self.ui).get_serial()
+                self.arduino = Hope_Arduino.arduino_hope(self, self.ui)
+                self.serial = self.arduino.get_serial()
 
                 # This is a thread that always runs and listens to commands from the Arduino
                 # self.global_listener_thread = Thread(self.listening)
