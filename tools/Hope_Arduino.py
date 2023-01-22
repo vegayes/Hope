@@ -25,4 +25,4 @@ class arduino_hope:
         return self.serial
 
     def send_data(self, message):
-         self.serial.write(message)
+        self.serial.write(message)
