@@ -8,6 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_HOPE(object):
     def setupUi(self, HOPE):
         HOPE.setObjectName("HOPE")
@@ -200,8 +201,10 @@ class Ui_HOPE(object):
         _translate = QtCore.QCoreApplication.translate
         HOPE.setWindowTitle(_translate("HOPE", "Hybrid Optimum Printer Engineering"))
         self.refresh_ports_button.setText(_translate("HOPE", "Refresh ports"))
-        self.serial_port_label.setText(_translate("HOPE", "<html><head/><body><p><span style=\" font-size:14pt; font-weight:600;\">Serial Port :</span></p></body></html>"))
-        self.Microstepping_label.setText(_translate("HOPE", "<html><head/><body><p><span style=\" font-size:14pt; font-weight:600;\">Microstepping : </span></p></body></html>"))
+        self.serial_port_label.setText(_translate("HOPE",
+                                                  "<html><head/><body><p><span style=\" font-size:14pt; font-weight:600;\">Serial Port :</span></p></body></html>"))
+        self.Microstepping_label.setText(_translate("HOPE",
+                                                    "<html><head/><body><p><span style=\" font-size:14pt; font-weight:600;\">Microstepping : </span></p></body></html>"))
         self.JOG_Group.setTitle(_translate("HOPE", "<JOG>"))
         self.jog_y_right_button.setText(_translate("HOPE", "→"))
         self.jog_z_label.setText(_translate("HOPE", "Z"))
@@ -225,10 +228,10 @@ class Ui_HOPE(object):
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     HOPE = QtWidgets.QDialog()
     ui = Ui_HOPE()
     ui.setupUi(HOPE)
     HOPE.show()
     sys.exit(app.exec_())
-
