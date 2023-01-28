@@ -12,7 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_HOPE(object):
     def setupUi(self, HOPE):
         HOPE.setObjectName("HOPE")
-        HOPE.resize(1083, 482)
+        HOPE.resize(1066, 605)
         self.serial_port_combo = QtWidgets.QComboBox(HOPE)
         self.serial_port_combo.setGeometry(QtCore.QRect(164, 74, 241, 21))
         self.serial_port_combo.setObjectName("serial_port_combo")
@@ -224,6 +224,9 @@ class Ui_HOPE(object):
         self.position_z_label.setText(_translate("HOPE", "Z"))
         self.position_a_label.setText(_translate("HOPE", "A"))
         self.connect_button.setText(_translate("HOPE", "Connect"))
+        self.connect_button.setStyleSheet("border-radius: 40px;"
+                                          "background-color:rgb(170,170,255)") # 색상 변경
+
 
 
 if __name__ == "__main__":
