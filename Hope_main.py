@@ -33,7 +33,7 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
         # self.port_nano = '/dev/cu.usbserial-A9M11B77'
         # self.port_uno = "/dev/cu.usbmodem1411"
         # self.baudrate = baudrate
-        self.statusBar().showMessage("You clicked CONNECT TO CONTROLLER")
+        self.statusBar().showMessage("새로운 포트를 찾았습니다.")
         try:
             port_declared = self.port in vars()
             try:
@@ -65,7 +65,7 @@ def main():
     import sys
     app = QtWidgets.QApplication(sys.argv)
     Window = UI_Window()
-    Window.setWindowTitle("Poseidon Pumps Controller - Pachter Lab Caltech 2018")
+    Window.setWindowTitle("HOPE")
     Window.show()
     sys.exit(app.exec_())
 

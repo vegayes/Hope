@@ -13,7 +13,7 @@ class arduino_hope:
     def setting_arduino(self):
         self.serial = serial.Serial()
         self.serial.port = self.main.port
-        self.serial.baudrate = 9600
+        self.serial.baudrate = 230400
         self.serial.parity = serial.PARITY_NONE
         self.serial.stopbits = serial.STOPBITS_ONE
         self.serial.bytesize = serial.EIGHTBITS
@@ -25,5 +25,10 @@ class arduino_hope:
         return self.serial
 
     def send_data(self, message):
-        message = str(message).encode("utf-8")
+        message = message.encode("utf-8")
         self.serial.write(message)
+
+    #     받는 거????
+    def receive_data(self, message):
+        message = message.encode("utf-8")
+        self.serial.read(message)

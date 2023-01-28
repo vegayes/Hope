@@ -12,8 +12,52 @@ class jog_hope:
         self.ui = ui
 
         self.ui.jog_x_up_button.clicked.connect(self.jog_x_up)
+        self.ui.jog_x_down_button.clicked.connect(self.jog_x_down)
+        self.ui.jog_y_left_button.clicked.connect(self.jog_y_up)
+        self.ui.jog_y_right_button.clicked.connect(self.jog_y_down)
+        self.ui.jog_z_up_button.clicked.connect(self.jog_z_up)
+        self.ui.jog_z_down_button.clicked.connect(self.jog_z_down)
+        self.ui.jog_a_up_button.clicked.connect(self.jog_a_up)
+        self.ui.jog_a_down_button.clicked.connect(self.jog_a_down)
 
+# JOG 함수 // speed랑 이런건 다시 설정하기!
     def jog_x_up(self):
         self.arduino = self.main.arduino
-        self.arduino.send_data("x")
-        self.main.statusBar().showMessage("jog_x")
+        self.arduino.send_data('x')
+        self.main.statusBar().showMessage("Jog_X +")
+
+    def jog_x_down(self):
+        self.arduino = self.main.arduino
+        self.arduino.send_data('b')
+        self.main.statusBar().showMessage("Jog_X -")
+
+    def jog_y_up(self):
+        self.arduino = self.main.arduino
+        self.arduino.send_data('y')
+        self.main.statusBar().showMessage("Jog_Y +")
+
+    def jog_y_down(self):
+        self.arduino = self.main.arduino
+        self.arduino.send_data('c')
+        self.main.statusBar().showMessage("Jog_Y -")
+
+    def jog_z_up(self):
+        self.arduino = self.main.arduino
+        self.arduino.send_data('z')
+        self.main.statusBar().showMessage("Jog_Z +")
+
+    def jog_z_down(self):
+        self.arduino = self.main.arduino
+        self.arduino.send_data('d')
+        self.main.statusBar().showMessage("Jog_Z -")
+
+    def jog_a_up(self):
+        self.arduino = self.main.arduino
+        self.arduino.send_data('a')
+        self.main.statusBar().showMessage("Jog_A +")
+
+    def jog_a_down(self):
+        self.arduino = self.main.arduino
+        self.arduino.send_data('e')
+        self.main.statusBar().showMessage("Jog_A -")
+

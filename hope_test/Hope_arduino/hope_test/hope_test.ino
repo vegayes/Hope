@@ -5,18 +5,14 @@
 
 #define BAUD_RATE 230400 // 보드레이트 
 
-// 28 (4output motor) test
-#define mtrPin1  8     // IN1 on the ULN2003 driver 1
-#define mtrPin2  9     // IN2 on the ULN2003 driver 1
-#define mtrPin3  10     // IN3 on the ULN2003 driver 1
-#define mtrPin4  11     // IN4 on the ULN2003 driver 1
+
 
 AccelStepper Xaxis(1, 2, 5); // pin 2 = step, pin 5 = direction
 //AccelStepper Yaxis(1, 3, 6); // pin 3 = step, pin 6 = direction
 //AccelStepper Zaxis(1, 4, 7); // pin 4 = step, pin 7 = direction
 //AccelStepper Aaxis(1, 9, 10); //이거 맞음? pin 더 찾기 
 
-AccelStepper stepper1(HALFSTEP, mtrPin1, mtrPin3, mtrPin2, mtrPin4);
+AccelStepper stepper1(HALFSTEP, 8, 10, 9, 11); // 28motor(8, IN1, IN2, IN3, In4)
 
 void setup() {
   Serial.begin(BAUD_RATE);
@@ -46,7 +42,7 @@ void loop() {
 
 
 void getDataFromPC() {
-  if (Serial.available() > 0) {
+  if (Serial.available() > 0) {}
 
 
 
