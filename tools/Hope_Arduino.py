@@ -2,13 +2,14 @@ import serial
 
 import Hope_UI
 import Hope_main
-
+import time
 
 class arduino_hope:
     def __init__(self, main: Hope_main.UI_Window, ui: Hope_UI.Ui_HOPE):
         self.main = main
         self.ui = ui
         self.setting_arduino()
+        self.receive_data()
 
     def setting_arduino(self):
         self.serial = serial.Serial()
@@ -20,6 +21,8 @@ class arduino_hope:
         self.serial.timeout = 1
         self.serial.open()
         self.serial.flushInput()
+        time.sleep(0.5)
+        self.receive_data()
 
     def get_serial(self):
         return self.serial
@@ -28,7 +31,11 @@ class arduino_hope:
         message = message.encode("utf-8")
         self.serial.write(message)
 
-    #     받는 거????
-    def receive_data(self, message):
-        message = message.encode("utf-8")
-        self.serial.read(message)
+    # 입력 받은 값
+    # 알 수 없는 공백의 추가로 두번 받아들임
+    # Todo 공백 해결
+    def receive_data(self):
+        self.m = self.serial.readline()
+        print(self.m[:len(self.m)-1].decode())
+        self.m = self.serial.readline()
+        print(self.m[:len(self.m) - 1].decode())

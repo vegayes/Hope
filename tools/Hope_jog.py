@@ -26,6 +26,7 @@ class jog_hope:
         self.arduino = self.main.arduino
         self.arduino.send_data('x')
         self.main.statusBar().showMessage("Jog_X +")
+        self.arduino.receive_data()
 
     def jog_x_down(self):
         self.arduino = self.main.arduino
