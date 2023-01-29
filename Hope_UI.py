@@ -8,10 +8,11 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_HOPE(object):
     def setupUi(self, HOPE):
         HOPE.setObjectName("HOPE")
-        HOPE.resize(1083, 482)
+        HOPE.resize(1066, 605)
         self.serial_port_combo = QtWidgets.QComboBox(HOPE)
         self.serial_port_combo.setGeometry(QtCore.QRect(164, 74, 241, 21))
         self.serial_port_combo.setObjectName("serial_port_combo")
@@ -200,8 +201,10 @@ class Ui_HOPE(object):
         _translate = QtCore.QCoreApplication.translate
         HOPE.setWindowTitle(_translate("HOPE", "Hybrid Optimum Printer Engineering"))
         self.refresh_ports_button.setText(_translate("HOPE", "Refresh ports"))
-        self.serial_port_label.setText(_translate("HOPE", "<html><head/><body><p><span style=\" font-size:14pt; font-weight:600;\">Serial Port :</span></p></body></html>"))
-        self.Microstepping_label.setText(_translate("HOPE", "<html><head/><body><p><span style=\" font-size:14pt; font-weight:600;\">Microstepping : </span></p></body></html>"))
+        self.serial_port_label.setText(_translate("HOPE",
+                                                  "<html><head/><body><p><span style=\" font-size:14pt; font-weight:600;\">Serial Port :</span></p></body></html>"))
+        self.Microstepping_label.setText(_translate("HOPE",
+                                                    "<html><head/><body><p><span style=\" font-size:14pt; font-weight:600;\">Microstepping : </span></p></body></html>"))
         self.JOG_Group.setTitle(_translate("HOPE", "<JOG>"))
         self.jog_y_right_button.setText(_translate("HOPE", "→"))
         self.jog_z_label.setText(_translate("HOPE", "Z"))
@@ -221,14 +224,17 @@ class Ui_HOPE(object):
         self.position_z_label.setText(_translate("HOPE", "Z"))
         self.position_a_label.setText(_translate("HOPE", "A"))
         self.connect_button.setText(_translate("HOPE", "Connect"))
+        self.connect_button.setStyleSheet("border-radius: 40px;"
+                                          "background-color:rgb(170,170,255)") # 색상 변경
+
 
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     HOPE = QtWidgets.QDialog()
     ui = Ui_HOPE()
     ui.setupUi(HOPE)
     HOPE.show()
     sys.exit(app.exec_())
-
