@@ -1,10 +1,10 @@
 import glob
 import sys
+
 import serial
 
-from PyQt5 import QtWidgets
-
-import Hope_UI, Hope_main
+import Hope_UI
+import Hope_main
 
 
 class port_hope:
@@ -43,7 +43,7 @@ class port_hope:
 
     def refresh_ports(self):
 
-        self.main.statusBar().showMessage("You clicked REFRESH PORTS")
+        self.main.statusBar().showMessage("포트를 다시 찾았습니다.")
         self.ui.serial_port_combo.clear()
         self.populate_ports()
         self.__set_port()
