@@ -1,6 +1,5 @@
 import time
 
-import serial
 from PyQt5 import QtWidgets
 
 import Hope_UI
@@ -29,10 +28,12 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
 
         self.port = self.portClass.get_port()
 
+    # Todo represh버튼 누른후 connect 오류 -> self.port 추가로 해결(Hope_jog에서 self.port = self.main.port)로인한 에러
     def connect(self):
         # self.port_nano = '/dev/cu.usbserial-A9M11B77'
         # self.port_uno = "/dev/cu.usbmodem1411"
         # self.baudrate = baudrate
+        self.port = self.portClass.get_port()
         self.statusBar().showMessage("새로운 포트를 찾았습니다.")
         try:
             port_declared = self.port in vars()
@@ -56,6 +57,7 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
                 self.statusBar().showMessage("아두이노와 연결이 되었습니다. ")
             except:
                 self.statusBar().showMessage("아두이노와 연결이 되지 않았습니다.")
+                print("아두이노와 연결이 되지 않았습니다.")
                 raise CannotConnectException
         except AttributeError:
             self.statusBar().showMessage("보드를 연결 시킨 후 정확하게 포트와 연결하세요.")

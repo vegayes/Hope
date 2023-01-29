@@ -4,6 +4,7 @@ import Hope_UI
 import Hope_main
 import time
 
+
 class arduino_hope:
     def __init__(self, main: Hope_main.UI_Window, ui: Hope_UI.Ui_HOPE):
         self.main = main
@@ -11,6 +12,7 @@ class arduino_hope:
         self.setting_arduino()
         self.receive_data()
 
+    # Todo
     def setting_arduino(self):
         self.serial = serial.Serial()
         self.serial.port = self.main.port
@@ -36,6 +38,6 @@ class arduino_hope:
     # Todo 공백 해결
     def receive_data(self):
         self.m = self.serial.readline()
-        print(self.m[:len(self.m)-1].decode())
+        print(self.m[:len(self.m) - 1].decode())
         self.m = self.serial.readline()
         print(self.m[:len(self.m) - 1].decode())

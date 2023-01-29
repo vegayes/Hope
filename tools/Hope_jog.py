@@ -21,7 +21,7 @@ class jog_hope:
         self.ui.jog_a_down_button.clicked.connect(self.jog_a_down)
         self.ui.jog_azrn_button.clicked.connect(self.jog_azrn)
 
-# JOG 함수 // speed랑 이런건 다시 설정하기!
+    # JOG 함수 // speed랑 이런건 다시 설정하기!
     def jog_x_up(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('x')
@@ -32,40 +32,47 @@ class jog_hope:
         self.arduino = self.main.arduino
         self.arduino.send_data('b')
         self.main.statusBar().showMessage("Jog_X -")
+        self.arduino.receive_data()
 
     def jog_y_up(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('y')
         self.main.statusBar().showMessage("Jog_Y +")
+        self.arduino.receive_data()
 
     def jog_y_down(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('c')
         self.main.statusBar().showMessage("Jog_Y -")
+        self.arduino.receive_data()
 
     def jog_z_up(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('z')
         self.main.statusBar().showMessage("Jog_Z +")
+        self.arduino.receive_data()
 
     def jog_z_down(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('d')
         self.main.statusBar().showMessage("Jog_Z -")
+        self.arduino.receive_data()
 
     def jog_a_up(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('a')
         self.main.statusBar().showMessage("Jog_A +")
+        self.arduino.receive_data()
 
     def jog_a_down(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('e')
         self.main.statusBar().showMessage("Jog_A -")
+        self.arduino.receive_data()
 
-
-# 아직 아두이노 코드로 만들지 않음. All Zrn
+    # 아직 아두이노 코드로 만들지 않음. All Zrn
     def jog_azrn(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('f')
         self.main.statusBar().showMessage("AZRN")
+        self.arduino.receive_data()
