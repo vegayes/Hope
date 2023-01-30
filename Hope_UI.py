@@ -10,6 +10,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_HOPE(object):
+
     def setupUi(self, HOPE):
         HOPE.setObjectName("HOPE")
         HOPE.resize(1066, 605)
@@ -140,7 +141,7 @@ class Ui_HOPE(object):
         self.jog_azrn_button.setFont(font)
         self.jog_azrn_button.setObjectName("jog_azrn_button")
         self.Position_Group = QtWidgets.QGroupBox(HOPE)
-        self.Position_Group.setGeometry(QtCore.QRect(40, 350, 341, 111))
+        self.Position_Group.setGeometry(QtCore.QRect(390, 150, 341, 111))
         self.Position_Group.setObjectName("Position_Group")
         self.position_x_label = QtWidgets.QLabel(self.Position_Group)
         self.position_x_label.setGeometry(QtCore.QRect(20, 31, 16, 28))
@@ -193,11 +194,47 @@ class Ui_HOPE(object):
         self.connect_button = QtWidgets.QPushButton(HOPE)
         self.connect_button.setGeometry(QtCore.QRect(420, 110, 101, 28))
         self.connect_button.setObjectName("connect_button")
+        self.Auto_Group = QtWidgets.QGroupBox(HOPE)
+        self.Auto_Group.setGeometry(QtCore.QRect(40, 350, 341, 141))
+        self.Auto_Group.setObjectName("Auto_Group")
+        self.File_open_button = QtWidgets.QPushButton(self.Auto_Group)
+        self.File_open_button.setEnabled(True)
+        self.File_open_button.setGeometry(QtCore.QRect(20, 30, 151, 91))
+        font = QtGui.QFont()
+        font.setFamily("Agency FB")
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.File_open_button.setFont(font)
+        self.File_open_button.setCheckable(False)
+        self.File_open_button.setObjectName("File_open_button")
+        self.Auto_start_button = QtWidgets.QPushButton(self.Auto_Group)
+        self.Auto_start_button.setEnabled(True)
+        self.Auto_start_button.setGeometry(QtCore.QRect(180, 30, 151, 41))
+        font = QtGui.QFont()
+        font.setFamily("Agency FB")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.Auto_start_button.setFont(font)
+        self.Auto_start_button.setCheckable(False)
+        self.Auto_start_button.setObjectName("Auto_start_button")
+        self.Auto_stop_button = QtWidgets.QPushButton(self.Auto_Group)
+        self.Auto_stop_button.setEnabled(True)
+        self.Auto_stop_button.setGeometry(QtCore.QRect(180, 80, 151, 41))
+        font = QtGui.QFont()
+        font.setFamily("Agency FB")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.Auto_stop_button.setFont(font)
+        self.Auto_stop_button.setCheckable(False)
+        self.Auto_stop_button.setObjectName("Auto_stop_button")
 
         self.retranslateUi(HOPE)
         QtCore.QMetaObject.connectSlotsByName(HOPE)
 
-    def retranslateUi(self, HOPE):
+    def retranslateUi(self, HOPE):  # 버튼 및 객체들 선언하는 부분?
         _translate = QtCore.QCoreApplication.translate
         HOPE.setWindowTitle(_translate("HOPE", "Hybrid Optimum Printer Engineering"))
         self.refresh_ports_button.setText(_translate("HOPE", "Refresh ports"))
@@ -224,8 +261,12 @@ class Ui_HOPE(object):
         self.position_z_label.setText(_translate("HOPE", "Z"))
         self.position_a_label.setText(_translate("HOPE", "A"))
         self.connect_button.setText(_translate("HOPE", "Connect"))
-        self.connect_button.setStyleSheet("border-radius: 40px;"
-                                          "background-color:rgb(170,170,255)") # 색상 변경
+        self.Auto_Group.setTitle(_translate("HOPE", "<Auto>"))
+        self.File_open_button.setText(_translate("HOPE", "File Open"))
+        self.Auto_start_button.setText(_translate("HOPE", "Auto Start"))
+        self.Auto_stop_button.setText(_translate("HOPE", "Auto Stop"))
+        # self.connect_button.setStyleSheet("border-radius: 40px;"
+        #                                   "background-color:rgb(170,170,255)") # 색상 변경
 
 
 

@@ -16,7 +16,7 @@ class arduino_hope:
     def setting_arduino(self):
         self.serial = serial.Serial()
         self.serial.port = self.main.port
-        self.serial.baudrate = 230400
+        self.serial.baudrate = 115200
         self.serial.parity = serial.PARITY_NONE
         self.serial.stopbits = serial.STOPBITS_ONE
         self.serial.bytesize = serial.EIGHTBITS
