@@ -230,6 +230,9 @@ class Ui_HOPE(object):
         self.Auto_stop_button.setFont(font)
         self.Auto_stop_button.setCheckable(False)
         self.Auto_stop_button.setObjectName("Auto_stop_button")
+        self.G_code_upload = QtWidgets.QTextEdit(HOPE)
+        self.G_code_upload.setGeometry(QtCore.QRect(420, 320, 361, 211))
+        self.G_code_upload.setObjectName("G_code_upload")
 
         self.retranslateUi(HOPE)
         QtCore.QMetaObject.connectSlotsByName(HOPE)
@@ -270,12 +273,3 @@ class Ui_HOPE(object):
 
 
 
-if __name__ == "__main__":
-    import sys
-
-    app = QtWidgets.QApplication(sys.argv)
-    HOPE = QtWidgets.QDialog()
-    ui = Ui_HOPE()
-    ui.setupUi(HOPE)
-    HOPE.show()
-    sys.exit(app.exec_())
