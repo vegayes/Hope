@@ -14,6 +14,7 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
         from tools.Hope_Port import port_hope
         from tools.Hope_Microstepping import microstepping_hope
         from tools.Hope_jog import jog_hope
+        from tools.Hope_G_code import G_code_hope
 
         super(UI_Window, self).__init__()
 
@@ -23,6 +24,7 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
         self.portClass = port_hope(self, self.ui)
         self.microsteppingClass = microstepping_hope(self, self.ui)
         self.jogClass = jog_hope(self, self.ui)
+        self.G_codeClass = G_code_hope(self, self.ui)
 
         self.ui.connect_button.clicked.connect(self.connect)
 
@@ -63,7 +65,6 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
             self.statusBar().showMessage("보드를 연결 시킨 후 정확하게 포트와 연결하세요.")
 
 
-
 def main():
     import sys
     app = QtWidgets.QApplication(sys.argv)
@@ -75,7 +76,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-class Nothing: #의미없는 클래스 pull
-    pass
