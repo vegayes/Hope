@@ -14,7 +14,7 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
         from tools.Hope_Port import port_hope
         from tools.Hope_Microstepping import microstepping_hope
         from tools.Hope_jog import jog_hope
-        from tools.Hope_G_code import G_code_hope
+        from tools.Hope_G_Code import G_code_hope
 
         super(UI_Window, self).__init__()
 
