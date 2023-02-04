@@ -55,7 +55,7 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
                 # self.ui.disconnect_BTN.setEnabled(True) 연결 끊기
 
                 self.ui.connect_button.setEnabled(False)
-                time.sleep(3)
+                time.sleep(1.2)
                 self.statusBar().showMessage("아두이노와 연결이 되었습니다. ")
             except:
                 self.statusBar().showMessage("아두이노와 연결이 되지 않았습니다.")
