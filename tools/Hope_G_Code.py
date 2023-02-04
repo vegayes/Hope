@@ -36,13 +36,13 @@ class G_code_hope:
         #     self.Hope_UI.Ui_HOPE.G_code_upload(line)
 
         print(type(fname), fname)
-        self.Hope_UI.Ui_HOPE.G_code_upload(fname[0])
+        # self.ui.G_code_upload.setText(fname[0])
 
         if fname[0]:
             f = open(fname[0],'r')
             with f:
                 data = f.read()
-                self.Hope_UI.Ui_HOPE.G_code_upload(data)
+                self.ui.G_code_upload.setText(data)
 
 
         if fname[0]:
