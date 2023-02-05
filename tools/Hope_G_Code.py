@@ -42,7 +42,14 @@ class G_code_hope:
             f = open(fname[0], 'r')
             with f:
                 data = f.read()
+                # data = data[:-4]  # 맨 마지막 줄 없애기 M30
+                # data = data.replace('M30', '') # M30지우기 but
+
                 self.ui.G_code_upload.setText(data)
+                self.ui.G_code_upload.append("G01 X0 Y0 Z10 A90") # 원점 복귀
+                self.ui.G_code_upload.append("G01 Z0 A0") # 원점 복귀
+                self.ui.G_code_upload.append("M30")  # 끝내기
+
 
         if fname[0]:
             print("파일이 선택되었으며 경로는 아래와 같음")
