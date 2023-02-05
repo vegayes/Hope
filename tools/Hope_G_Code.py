@@ -42,7 +42,7 @@ class G_code_hope:
             f = open(fname[0], 'r')
             with f:
                 data = f.read()
-                # data = data[:-4]  # 맨 마지막 줄 없애기 M30
+                data = data[:-4]  # 맨 마지막 줄 없애기 M30
                 # data = data.replace('M30', '') # M30지우기 but
 
                 self.ui.G_code_upload.setText(data)
