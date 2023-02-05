@@ -39,22 +39,16 @@ class G_code_hope:
         # self.ui.G_code_upload.setText(fname[0])
 
         if fname[0]:
-            f = open(fname[0],'r')
+            f = open(fname[0], 'r')
             with f:
                 data = f.read()
                 self.ui.G_code_upload.setText(data)
-
 
         if fname[0]:
             print("파일이 선택되었으며 경로는 아래와 같음")
             print(fname[0])
         else:
             print("파일을 고르지 않음")
-
-
-
-
-
 
     def Auto_start(self):
         pass
