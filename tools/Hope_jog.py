@@ -1,15 +1,14 @@
 import Hope_UI
 import Hope_main
-
-
-class NoFindArduino(Exception):
-    pass
+from tools import Hope_Position
 
 
 class jog_hope:
     def __init__(self, main: Hope_main.UI_Window, ui: Hope_UI.Ui_HOPE):
         self.main = main
         self.ui = ui
+
+        self.position = Hope_Position.position_hope(main, ui)
 
         self.ui.jog_x_up_button.clicked.connect(self.jog_x_up)
         self.ui.jog_x_down_button.clicked.connect(self.jog_x_down)
@@ -27,6 +26,7 @@ class jog_hope:
         self.arduino.send_data('x')
         self.main.statusBar().showMessage("Jog_X +")
         self.arduino.receive_data()
+        self.position.set_x_position(5)
 
     def jog_x_down(self):
         self.arduino = self.main.arduino

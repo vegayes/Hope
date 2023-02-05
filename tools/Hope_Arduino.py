@@ -20,7 +20,7 @@ class arduino_hope:
         self.serial.parity = serial.PARITY_NONE
         self.serial.stopbits = serial.STOPBITS_ONE
         self.serial.bytesize = serial.EIGHTBITS
-        self.serial.timeout = 1
+        self.serial.timeout = 0.1
         self.serial.open()
         self.serial.flushInput()
         time.sleep(0.5)
