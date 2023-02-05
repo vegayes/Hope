@@ -7,8 +7,6 @@ from PyQt5.QtWidgets import *
 class G_code_hope:
 
     def __init__(self, main: Hope_main.UI_Window, ui: Hope_UI.Ui_HOPE):
-        self.Hope_UI = None
-        self.fname = None
         self.main = main
         self.ui = ui
 
@@ -39,7 +37,7 @@ class G_code_hope:
         # self.ui.G_code_upload.setText(fname[0])
 
         if fname[0]:
-            f = open(fname[0], 'r')
+            f = open(fname[0], 'r', encoding='UTF8')
             with f:
                 data = f.read()
                 data = data[:-4]  # 맨 마지막 줄 없애기 M30
