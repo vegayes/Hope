@@ -26,13 +26,15 @@ class jog_hope:
         self.arduino.send_data('x')
         self.main.statusBar().showMessage("Jog_X +")
         self.arduino.receive_data()
-        self.position.set_x_position(5)
+        self.position.set_x_position(5)  # 절대 값 말고 계산값으로 ..
 
     def jog_x_down(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('b')
         self.main.statusBar().showMessage("Jog_X -")
         self.arduino.receive_data()
+        self.position.set_x_position(-5)
+
 
     def jog_y_up(self):
         self.arduino = self.main.arduino
