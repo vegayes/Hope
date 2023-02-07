@@ -23,6 +23,13 @@ AccelStepper stepper2(AccelStepper::DRIVER, Y_STP, Y_DIR); // Y motor
 AccelStepper stepper3(AccelStepper::DRIVER, Z_STP, Z_DIR); // Z motor
 AccelStepper stepper4(AccelStepper::DRIVER, A_STP, A_DIR); // A motor
 
+AccelStepper steppers[4] = {stepper_1, stepper2, stepper3, stepper4};
+
+signed long distances_to_go[4];
+signed long targets_position[4];
+signed long distances_left[4];
+
+
 
 void setup(){
   Serial.begin(BAUD_RATE);
@@ -30,9 +37,9 @@ void setup(){
   stepper_1.setMaxSpeed(1000); // 28 test motor
   stepper_1.setAcceleration(200);
 
-  
-  stepper_1.setMaxSpeed(1000); // x motor
-  stepper_1.setAcceleration(2000);
+
+  stepper1.setMaxSpeed(1000); // x motor
+  stepper1.setAcceleration(2000);
   
   stepper2.setMaxSpeed(1000); // y motor
   stepper2.setAcceleration(2000);
@@ -42,7 +49,6 @@ void setup(){
   
   stepper4.setMaxSpeed(1000); // a motor
   stepper4.setAcceleration(2000);
-  
 }
 
 void loop(){
@@ -106,12 +112,25 @@ void loop(){
     data = 0; 
    }
    else if ( data == 'p'){
-    stepper_1.stop();
-    stepper_1.disableOutputs();
+    return stopAll();
+//    stepper_1.stop();
+//    stepper_1.disableOutputs();
 //    stepper2.stop();
 //    stepper3.stop();
 //    stepper4.stop();
-    data = 0; 
+//    data = 0; 
    }
-}
-}
+} }
+
+
+ void stopAll() {
+  for (int i = 0; i < 3; i += 1) {
+    steppers[i].stop();
+  } }
+
+//void data(){
+//  char * strtokIndx; // start ok index
+//
+//  str 
+// }
+// }

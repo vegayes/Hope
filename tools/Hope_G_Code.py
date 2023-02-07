@@ -44,8 +44,8 @@ class G_code_hope:
                 # data = data.replace('M30', '') # M30지우기 but
 
                 self.ui.G_code_upload.setText(data)
-                self.ui.G_code_upload.append("G01 X0 Y0 Z10 A90") # 원점 복귀
-                self.ui.G_code_upload.append("G01 Z0 A0") # 원점 복귀
+                self.ui.G_code_upload.append("G01 X0 Y0 Z10 A90") # X Y 원점 복귀 혹시 몰라서 A축이랑 Z축 그려지지 않게 올림.
+                self.ui.G_code_upload.append("G01 Z0 A0") # Z A 원점 복귀
                 self.ui.G_code_upload.append("M30")  # 끝내기
 
 
@@ -54,6 +54,9 @@ class G_code_hope:
             print(fname[0])
         else:
             print("파일을 고르지 않음")
+
+    def readline(self): # G코드를 가져와서 읽게 한다.  즉, 아두이노한테 보내면서 보내고 있는 값들을 read edit에 추가한다.
+        pass
 
     def Auto_start(self):
         pass
