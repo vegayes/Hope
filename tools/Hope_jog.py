@@ -25,7 +25,7 @@ class jog_hope:
         self.arduino = self.main.arduino
         self.arduino.send_data('x')
         self.main.statusBar().showMessage("Jog_X +")
-        self.arduino.receive_data()
+        self.arduino.receive_data()   # 여기서 나타나는 값을 받아올 수 있나?
         self.position.set_x_position(5)  # 절대 값 말고 계산값으로 ..
 
     def jog_x_down(self):
