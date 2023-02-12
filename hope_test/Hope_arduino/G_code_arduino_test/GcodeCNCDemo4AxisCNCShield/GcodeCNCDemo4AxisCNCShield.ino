@@ -60,7 +60,7 @@ int sofar;  // how much is in the buffer
 float fr=0;  // human version
 long step_delay;  // machine version
 
-float px,py,pz,pa;  // position x,y,z,a axis
+float px,py,pz,pe;  // position
 
 // settings
 char mode_abs=1;  // absolute mode?
@@ -109,12 +109,12 @@ void feedrate(float nfr) {
  * @input npx new position x
  * @input npy new position y
  */
-void position(float npx,float npy,float npz,float npa) {
+void position(float npx,float npy,float npz,float npe) {
   // here is a good place to add sanity tests
   px=npx;
   py=npy;
   pz=npz;
-  pa=npa;
+  pe=npe;
 }
 
 
@@ -125,11 +125,11 @@ void position(float npx,float npy,float npz,float npa) {
  **/
 void onestep(int motor) {
 #ifdef VERBOSE
-  char *letter="XYZA";
+  char *letter="XYZE";
   Serial.print(letter[]);
 #endif
   
-  digitalWrite(motors[motor].step_pin,HIGH);
+  digitalWrite(motors[motor].step_pin,HIGH);  
   digitalWrite(motors[motor].step_pin,LOW);
 }
 
@@ -143,7 +143,7 @@ void line(float newx,float newy,float newz,float newe) {
   a[0].delta = (newx-px)*STEPS_PER_MM;
   a[1].delta = (newy-py)*STEPS_PER_MM;
   a[2].delta = (newz-pz)*STEPS_PER_MM;
-  a[3].delta = (newe-pa)*STEPS_PER_MM;
+  a[3].delta = (newe-pe)*STEPS_PER_MM;
   
   long i,j,maxsteps=0;
 
@@ -202,7 +202,7 @@ void line(float newx,float newy,float newz,float newe) {
   Serial.println(F("< Done."));
 #endif
 
-  position(newx,newy,newz,newa);
+  position(newx,newy,newz,newe);
 
   where();
 }
@@ -223,7 +223,7 @@ static float atan3(float dy,float dx) {
  * @input code the character to look for.
  * @input val the return value if /code/ is not found.
  **/
-float parseNumber(char code,float val) { //★
+float parseNumber(char code,float val) {
   char *ptr=buffer;  // start at the beginning of buffer
   while((long)ptr > 1 && (*ptr) && (long)ptr < (long)buffer+sofar) {  // walk to the end
     if(*ptr==code) {  // if you find code on your walk,
@@ -254,7 +254,7 @@ void where() {
   output("X",px);
   output("Y",py);
   output("Z",pz);
-  output("A",pa);
+  output("E",pe);
   output("F",fr/STEPS_PER_MM*60);
   Serial.println(mode_abs?"ABS":"REL");
 } 
@@ -291,7 +291,7 @@ void processCommand() {
     line( parseNumber('X',(mode_abs?px:0)) + (mode_abs?0:px),
           parseNumber('Y',(mode_abs?py:0)) + (mode_abs?0:py),
           parseNumber('Z',(mode_abs?pz:0)) + (mode_abs?0:pz),
-          parseNumber('A',(mode_abs?pa:0)) + (mode_abs?0:pa) );
+          parseNumber('E',(mode_abs?pe:0)) + (mode_abs?0:pe) );
     break;
     }
   case  2:
@@ -331,7 +331,12 @@ void ready() {
  * set up the pins for each motor
  * Pins fits a CNCshieldV3.xx
  */
-void motor_setup() { // motor ,tjfwjd
+void motor_setup() {
+//  motors[0].step_pin=10;
+//  motors[0].dir_pin=11;
+//  motors[0].enable_pin=8;
+//  motors[0].limit_switch_pin=9;
+  
   motors[0].step_pin=2;
   motors[0].dir_pin=5;
   motors[0].enable_pin=8;
