@@ -4,13 +4,18 @@ import Hope_UI
 import Hope_main
 import time
 
-
 class arduino_hope:
     def __init__(self, main: Hope_main.UI_Window, ui: Hope_UI.Ui_HOPE):
         self.main = main
         self.ui = ui
         self.setting_arduino()
         self.receive_data()
+
+    def read(self):
+        while True:
+            time.sleep(0.1)
+            time_value = self.serial.readline().decode()
+            print(time_value)
 
     # Todo
     def setting_arduino(self):
@@ -39,5 +44,4 @@ class arduino_hope:
     def receive_data(self):
         self.m = self.serial.readline()
         print(self.m[:len(self.m) - 1].decode())
-        self.m = self.serial.readline()
-        print(self.m[:len(self.m) - 1].decode())
+

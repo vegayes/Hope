@@ -78,3 +78,4 @@ class jog_hope:
         self.arduino.send_data('f')
         self.main.statusBar().showMessage("AZRN")
         self.arduino.receive_data()
+
