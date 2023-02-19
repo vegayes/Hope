@@ -3,6 +3,7 @@ import serial
 import Hope_UI
 import Hope_main
 import time
+from threading import Thread
 
 
 class arduino_hope:
@@ -25,6 +26,8 @@ class arduino_hope:
         self.serial.flushInput()
         time.sleep(0.5)
         self.receive_data()
+        th1 = Thread(target=self.loop_receive_data)
+        th1.start()
 
     def get_serial(self):
         return self.serial
@@ -41,3 +44,15 @@ class arduino_hope:
         print(self.m[:len(self.m) - 1].decode())
         self.m = self.serial.readline()
         print(self.m[:len(self.m) - 1].decode())
+
+    def loop_receive_data(self):
+        while True:
+            if self.serial.readable():
+                try :
+                    self.m = self.serial.readline()
+                    text = self.m[:len(self.m) - 1].decode()
+                    if len(text) != 0:
+                        print(text)
+                        time.sleep(0.1)
+                except:
+                    print("인코딩 에러 발생 : ", self.m)

@@ -67,19 +67,17 @@ class G_code_hope:
     def thread(self, text):
         for Gline in text:
             if self.ok:
-                Gline = Gline + ";"
+                Gline = Gline + ";\n"
                 self.arduino.send_data(Gline)
                 self.arduino.receive_data()
-                print(Gline)
                 time.sleep(1)
             else:
                 while not self.ok:
                     pass
-                Gline = Gline + ";"
+                Gline = Gline + ";\n"
                 self.arduino.send_data(Gline)
                 time.sleep(1)
                 self.arduino.receive_data()
-                print(Gline)
 
     def Auto_stop(self):
         self.arduino = self.main.arduino
