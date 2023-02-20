@@ -25,14 +25,12 @@ class jog_hope:
         self.arduino = self.main.arduino
         self.arduino.send_data('x')
         self.main.statusBar().showMessage("Jog_X +")
-        # self.arduino.receive_data()   # 여기서 나타나는 값을 받아올 수 있나?
         self.position.set_x_position(5)  # 절대 값 말고 계산값으로 ..
 
     def jog_x_down(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('b')
         self.main.statusBar().showMessage("Jog_X -")
-        # self.arduino.receive_data()
         self.position.set_x_position(-5)
 
 
@@ -40,41 +38,34 @@ class jog_hope:
         self.arduino = self.main.arduino
         self.arduino.send_data('y')
         self.main.statusBar().showMessage("Jog_Y +")
-        self.arduino.receive_data()
 
     def jog_y_down(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('c')
         self.main.statusBar().showMessage("Jog_Y -")
-        self.arduino.receive_data()
 
     def jog_z_up(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('z')
         self.main.statusBar().showMessage("Jog_Z +")
-        self.arduino.receive_data()
 
     def jog_z_down(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('d')
         self.main.statusBar().showMessage("Jog_Z -")
-        self.arduino.receive_data()
 
     def jog_a_up(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('a')
         self.main.statusBar().showMessage("Jog_A +")
-        self.arduino.receive_data()
 
     def jog_a_down(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('e')
         self.main.statusBar().showMessage("Jog_A -")
-        self.arduino.receive_data()
 
     # 아직 아두이노 코드로 만들지 않음. All Zrn
     def jog_azrn(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('f')
         self.main.statusBar().showMessage("AZRN")
-        self.arduino.receive_data()
