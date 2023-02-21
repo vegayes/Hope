@@ -18,8 +18,8 @@ char data;
 float steps = 50; // JOG이동 시, 고정값 (step * 5) 1step per 1mm distance 그러면 G코드 라고 생각하면 ??
 
 // define motor
-AccelStepper stepper_1(HALFSTEP, 8, 10, 9, 11); // 28motor(8, IN1, IN3, IN2, In4)
-AccelStepper stepper1(AccelStepper::DRIVER, X_STP, X_DIR); // X motor
+AccelStepper stepper1(HALFSTEP, 8, 10, 9, 11); // 28motor(8, IN1, IN3, IN2, In4)
+AccelStepper stepper_1(AccelStepper::DRIVER, X_STP, X_DIR); // X motor
 AccelStepper stepper2(AccelStepper::DRIVER, Y_STP, Y_DIR); // Y motor 
 AccelStepper stepper3(AccelStepper::DRIVER, Z_STP, Z_DIR); // Z motor
 AccelStepper stepper4(AccelStepper::DRIVER, A_STP, A_DIR); // A motor
@@ -85,9 +85,9 @@ void loop(){
           data = 0;
         }
       }
-      else if(data == 'a'){ // JOG A_ Up Button
+      else if(data == 'a'){ // JOG A_ Up Button  
         if(stepper4.distanceToGo() == 0 ){
-          stepper4.move(steps*5);
+          stepper4.move(steps*5); // 각도 값 다시 계산
           data = 0;
         }
       }
@@ -118,6 +118,12 @@ void loop(){
          stepper3.stop();
          stepper4.stop();         
       }
+//      else{ // G 코드 파일이랑 연동시키기 (class연결?!??!!?!?!?!식으로!?!!!!!!!!!!)
+//        
+//        Serial.println(data);
+//          data =0;
+//      }
+      
     }
       stepper1.run();
       stepper2.run();
