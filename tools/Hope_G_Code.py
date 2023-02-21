@@ -3,6 +3,7 @@ import Hope_main
 from threading import Thread
 from PyQt5.QtWidgets import *
 import time
+from display import Hope_ProgressBar
 
 
 class G_code_hope:
@@ -13,7 +14,8 @@ class G_code_hope:
         self.ok = True
         self.count = 0
         self.num = 0
-        # self.pbar =0
+
+        self.pbar = Hope_ProgressBar.ProgressBar_Hope(main, ui)
 
         self.ui.File_open_button.clicked.connect(self.open_button)
         self.ui.Auto_start_button.clicked.connect(self.Auto_start)
@@ -49,11 +51,10 @@ class G_code_hope:
     #     print(text)
 
     def Auto_start(self):  # Auto Start 버튼을 누르면 텍스트 값이 이동을 함.
-        self.main.statusBar().showMessage("AUTO START")
+        # self.main.statusBar().showMessage("AUTO START")      ProgressBar와 함께 사용시 에러뜸 Bar안에 statusBar 값이 떠버림..
         self.arduino = self.main.arduino
         text = self.ui.G_code_upload.toPlainText()
         text = text.splitlines()
-        # self.pbar = len(text)
         self.ok = True
 
         if self.count == 0:
@@ -67,32 +68,23 @@ class G_code_hope:
         #     time.sleep(0.25)
         #     self.arduino.receive_data()
 
-    def thread(self, text):
+    def thread(self, text: list):
+        i = 0
         for Gline in text:
-            if self.ok:
-                Gline = Gline + ";"
-                self.arduino.send_data(Gline)
-                self.arduino.receive_data()
-                print(Gline)
-                time.sleep(1)
-                # progressbar()
-            else:
-                while not self.ok:
-                    pass
-                Gline = Gline + ";"
-                self.arduino.send_data(Gline)
-                time.sleep(1)
-                self.arduino.receive_data()
-                print(Gline)
-
+            while not self.ok:
+                pass
+            Gline = Gline + ";"
+            self.arduino.send_data(Gline)
+            i += 1
+            self.pbar.setValue(int((i / len(text)) * 100))
+            print(Gline)
+            time.sleep(1)
 
     def Auto_stop(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('p')
         self.main.statusBar().showMessage("S T O P")
-        self.arduino.receive_data()
         self.ok = False
-
 
     # def progressbar (self):
     #     # int i = 0
@@ -103,6 +95,3 @@ class G_code_hope:
     #         self.num = i
     #         self.pbar.setValue(self.num)
     #         time.sleep(0.5)
-
-
-

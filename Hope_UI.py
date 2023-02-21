@@ -239,7 +239,7 @@ class Ui_HOPE(object):
         self.G_code_read.setObjectName("G_code_read")
         self.G_code_progressBar = QtWidgets.QProgressBar(HOPE)
         self.G_code_progressBar.setGeometry(QtCore.QRect(390, 520, 481, 25))
-        self.G_code_progressBar.setProperty("value", 24)
+        self.G_code_progressBar.setProperty("value", 0)
         self.G_code_progressBar.setObjectName("G_code_progressBar")
 
         self.retranslateUi(HOPE)

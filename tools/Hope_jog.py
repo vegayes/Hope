@@ -1,6 +1,6 @@
 import Hope_UI
 import Hope_main
-from tools import Hope_Position
+from display import Hope_Position
 
 
 class jog_hope:
