@@ -12,13 +12,15 @@ class G_code_hope:
         self.ui = ui
         self.ok = True
         self.count = 0
+        self.num = 0
+        # self.pbar =0
 
         self.ui.File_open_button.clicked.connect(self.open_button)
         self.ui.Auto_start_button.clicked.connect(self.Auto_start)
         self.ui.Auto_stop_button.clicked.connect(self.Auto_stop)
 
-    def file_name(self):  # 파일 명이 항상 다르니까.. 파일명을 확인하는 함수가 필요한가?
-        pass
+    # def file_name(self):  # 파일 명이 항상 다르니까.. 파일명을 확인하는 함수가 필요한가?
+    #     pass
 
     def open_button(self):
         fname = QFileDialog.getOpenFileName(self.main, 'Open file', './')
@@ -51,6 +53,7 @@ class G_code_hope:
         self.arduino = self.main.arduino
         text = self.ui.G_code_upload.toPlainText()
         text = text.splitlines()
+        # self.pbar = len(text)
         self.ok = True
 
         if self.count == 0:
@@ -72,6 +75,7 @@ class G_code_hope:
                 self.arduino.receive_data()
                 print(Gline)
                 time.sleep(1)
+                # progressbar()
             else:
                 while not self.ok:
                     pass
@@ -81,9 +85,24 @@ class G_code_hope:
                 self.arduino.receive_data()
                 print(Gline)
 
+
     def Auto_stop(self):
         self.arduino = self.main.arduino
         self.arduino.send_data('p')
         self.main.statusBar().showMessage("S T O P")
         self.arduino.receive_data()
         self.ok = False
+
+
+    # def progressbar (self):
+    #     # int i = 0
+    #     # percent = ((i +1)*100) / self.pbar
+    #     # print(percent)
+    #
+    #     for i in range(100):
+    #         self.num = i
+    #         self.pbar.setValue(self.num)
+    #         time.sleep(0.5)
+
+
+

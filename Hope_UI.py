@@ -13,13 +13,14 @@ class Ui_HOPE(object):
 
     def setupUi(self, HOPE):
         HOPE.setObjectName("HOPE")
-        HOPE.resize(1066, 605)
+        HOPE.resize(1477, 844)
         self.serial_port_combo = QtWidgets.QComboBox(HOPE)
         self.serial_port_combo.setGeometry(QtCore.QRect(164, 74, 241, 21))
         self.serial_port_combo.setObjectName("serial_port_combo")
         self.refresh_ports_button = QtWidgets.QPushButton(HOPE)
         self.refresh_ports_button.setGeometry(QtCore.QRect(420, 70, 101, 31))
         self.refresh_ports_button.setObjectName("refresh_ports_button")
+        self.refresh_ports_button.setStyleSheet("background-color : ")
         self.serial_port_label = QtWidgets.QLabel(HOPE)
         self.serial_port_label.setGeometry(QtCore.QRect(40, 70, 121, 31))
         self.serial_port_label.setObjectName("serial_port_label")
@@ -236,9 +237,10 @@ class Ui_HOPE(object):
         self.G_code_read = QtWidgets.QTextEdit(HOPE)
         self.G_code_read.setGeometry(QtCore.QRect(630, 170, 221, 341))
         self.G_code_read.setObjectName("G_code_read")
-        # self.pbar = QProgressBar(self) #진행바 다시 만들기
-        # self.pbar.setGeometry(30, 40, 200, 25)
-        # self.pbar.setMaximum(100)
+        self.G_code_progressBar = QtWidgets.QProgressBar(HOPE)
+        self.G_code_progressBar.setGeometry(QtCore.QRect(390, 520, 481, 25))
+        self.G_code_progressBar.setProperty("value", 24)
+        self.G_code_progressBar.setObjectName("G_code_progressBar")
 
         self.retranslateUi(HOPE)
         QtCore.QMetaObject.connectSlotsByName(HOPE)
@@ -274,8 +276,6 @@ class Ui_HOPE(object):
         self.File_open_button.setText(_translate("HOPE", "File Open"))
         self.Auto_start_button.setText(_translate("HOPE", "Auto Start"))
         self.Auto_stop_button.setText(_translate("HOPE", "Auto Stop"))
-        # self.connect_button.setStyleSheet("border-radius: 40px;"
-        #                                   "background-color:rgb(170,170,255)") # 색상 변경
 
 
 
