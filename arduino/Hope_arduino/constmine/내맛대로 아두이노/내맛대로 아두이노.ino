@@ -62,6 +62,7 @@ void loop() {
 
   
   getDataFromPython();
+
   if (LSwitchX.isPressed() || LSwitchY.isPressed() || LSwitchZ.isPressed()) {
     X_Stepper.stop();
     Test_Stepper.stop();
@@ -76,6 +77,9 @@ void loop() {
   //  }
   X_Stepper.run();
   Y_Stepper.run();
+
+  
+  print_position("X", X_Stepper.currentPosition(), "<d>");
 }
 
 
@@ -109,22 +113,22 @@ void mainFunction(char data) {
     case 'x':
       move_stepper(X_Stepper, 2500);
       move_stepper(Test_Stepper, 2500);
-      print_position(X_Stepper, "X", X_Stepper.currentPosition() + 2500);
+      print_position("X", X_Stepper.currentPosition() + 2500, "<c>");
       //      print_position(Test_Stepper, "Test", Test_Stepper.currentPosition() + 2500);
       break;
     case 'b':
       move_stepper(X_Stepper, -2500);
       move_stepper(Test_Stepper, -2500);
-      print_position(X_Stepper, "X", X_Stepper.currentPosition() - 2500);
+      print_position("X", X_Stepper.currentPosition() - 2500, "<c>");
       //      print_position(Test_Stepper, "Test", Test_Stepper.currentPosition() + 2500);
       break;
     case 'y':
       move_stepper(Y_Stepper, -2000);
-      print_position(Y_Stepper, "Y", Y_Stepper.currentPosition() - 2000);
+      print_position("Y", Y_Stepper.currentPosition() - 2000, "<c>");
       break;
     case 'c':
       move_stepper(Y_Stepper, 2000);
-      print_position(Y_Stepper, "Y", Y_Stepper.currentPosition() + 2000);
+      print_position("Y", Y_Stepper.currentPosition() + 2000, "<c>");
       break;
   }
 }
@@ -139,8 +143,8 @@ void move_stepper(AccelStepper &stepper, long value) {
 //   Serial.println((String) "현재 " + axis + "축 위치 :" + stepper.currentPosition());
 // }
 
-void print_position(AccelStepper &stepper, String axis, int value) {
-  Serial.println((String) "현재 " + axis + "축 위치 :" + value);
+void print_position(String axis, int value, String type) {
+  Serial.println((String) type + "현재 " + axis + "축 위치 :" + value);
 }
 
 /*
