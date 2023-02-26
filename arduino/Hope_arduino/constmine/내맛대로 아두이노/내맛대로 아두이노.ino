@@ -28,7 +28,7 @@ AccelStepper Y_Stepper(AccelStepper::DRIVER, Y_STP, Y_DIR);  // Y motor
 AccelStepper Z_Stepper(AccelStepper::DRIVER, Z_STP, Z_DIR);  // Z motor
 AccelStepper A_Stepper(AccelStepper::DRIVER, A_STP, A_DIR);  // A motor
 
-AccelStepper* steppers[5] = { &Test_Stepper, &X_Stepper, &Y_Stepper, &Z_Stepper, &A_Stepper };
+AccelStepper *steppers[5] = { &Test_Stepper, &X_Stepper, &Y_Stepper, &Z_Stepper, &A_Stepper };
 
 // define limite switch
 ezButton LSwitchX(limitX);
@@ -41,8 +41,8 @@ bool isStopped = false;  // stop 인식
 void setup() {
   Serial.begin(BAUD_RATE);
   Serial.println("시리얼을 보냄....");
-  set_StepperSetting(Test_Stepper, 500, 800);
-  set_StepperSetting(X_Stepper, 5000, 6000);
+  set_StepperSetting(Test_Stepper, 5000, 8000);
+  set_StepperSetting(X_Stepper, 5000, 8000);
   set_StepperSetting(Y_Stepper, 2000, 5000);
   set_StepperSetting(Z_Stepper, 7000, 500);
   set_StepperSetting(A_Stepper, 8000, 8000);
@@ -62,9 +62,11 @@ void loop() {
 
   getDataFromPython();
 
-  for (int i = 0; i < 5; i++) {
-    steppers[i]->run();
-  }
+  //  for (int i = 0; i < 5; i++) {
+  //    steppers[i]->run();
+  //  }
+  X_Stepper.run();
+  Y_Stepper.run();
 }
 
 
@@ -94,40 +96,90 @@ void getDataFromPython() {
   Python으로 부터 값을 받아온후 실행하게 될 함수.
 */
 void mainFunction(char data) {
+
+  /*
+    만약 작동 안되면 isPressedSwitch() 함수에서 매개변수 ezButton &Switch 로 바꿔보기  
+  */
+  if (LSwitchX.isPressed() || LSwitchY.isPressed() || LSwitchZ.isPressed()) {
+    X_Stepper.stop();
+    Test_Stepper.stop();
+    Y_Stepper.stop();
+    Z_Stepper.stop();
+    A_Stepper.stop();
+    Serial.println(F("The limit switchButton: TOUCHED"));
+  }
+
   switch (data) {
     case 'x':
       move_stepper(X_Stepper, 2500);
       move_stepper(Test_Stepper, 2500);
       print_position(X_Stepper, "X", X_Stepper.currentPosition() + 2500);
-      print_position(Test_Stepper, "Test", Test_Stepper.currentPosition() + 2500);
+      //      print_position(Test_Stepper, "Test", Test_Stepper.currentPosition() + 2500);
+      break;
+    case 'b':
+      move_stepper(X_Stepper, -2500);
+      move_stepper(Test_Stepper, -2500);
+      print_position(X_Stepper, "X", X_Stepper.currentPosition() - 2500);
+      //      print_position(Test_Stepper, "Test", Test_Stepper.currentPosition() + 2500);
+      break;
+    case 'y':
+      move_stepper(Y_Stepper, -2000);
+      print_position(Y_Stepper, "Y", Y_Stepper.currentPosition() - 2000);
+      break;
+    case 'c':
+      move_stepper(Y_Stepper, 2000);
+      print_position(Y_Stepper, "Y", Y_Stepper.currentPosition() + 2000);
       break;
   }
 }
 
 void move_stepper(AccelStepper &stepper, long value) {
   if (stepper.distanceToGo() == 0) {
-    stepper.move(2500);
+    stepper.move(value);
   }
 }
 
-void print_position(AccelStepper &stepper, String axis) {
-  Serial.println((String) "현재 " + axis + "축 위치 :" + stepper.currentPosition());
-}
+// void print_position(AccelStepper &stepper, String axis) {
+//   Serial.println((String) "현재 " + axis + "축 위치 :" + stepper.currentPosition());
+// }
 
 void print_position(AccelStepper &stepper, String axis, int value) {
   Serial.println((String) "현재 " + axis + "축 위치 :" + value);
 }
 
 /*
+  LimitSwitch X가 눌렸을떄 실행해야하는 함수
+*/
+void pressedLSwitchX() {
+  Serial.println(F("The limit switchX: TOUCHED"));
+  X_Stepper.stop();
+  Test_Stepper.stop();
+}
+/*
+  LimitSwitch Y가 눌렸을떄 실행해야하는 함수
+*/
+void pressedLSwitchY() {
+  Serial.println(F("The limit switchY: TOUCHED"));
+  Y_Stepper.stop();
+}
+/*
+  LimitSwitch Z가 눌렸을떄 실행해야하는 함수
+*/
+void pressedLSwitchZ() {
+  Serial.println(F("The limit switchZ: TOUCHED"));
+  Z_Stepper.stop();
+}
+
+/*
   Switch가 눌렸는지를 반환하는 함수
 */
-bool isPressedSwitch(ezButton Switch) {
-  return Switch.isPressed();
-}
+// bool isPressedSwitch(ezButton Switch) {
+//   return Switch.isPressed();
+// }
 
 /*
   Switch가 눌린후 떼어졌는지를 반환하는 함수
 */
-bool isReleasedSwitch(ezButton Switch) {
-  return Switch.isReleased();
-}
+// bool isReleasedSwitch(ezButton Switch) {
+//   return Switch.isReleased();
+// }
