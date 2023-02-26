@@ -60,7 +60,16 @@ void loop() {
   LSwitchY.loop();
   LSwitchZ.loop();
 
+  
   getDataFromPython();
+  if (LSwitchX.isPressed() || LSwitchY.isPressed() || LSwitchZ.isPressed()) {
+    X_Stepper.stop();
+    Test_Stepper.stop();
+    Y_Stepper.stop();
+    Z_Stepper.stop();
+    A_Stepper.stop();
+    Serial.println(F("The limit switchButton: TOUCHED"));
+  }
 
   //  for (int i = 0; i < 5; i++) {
   //    steppers[i]->run();
@@ -96,19 +105,6 @@ void getDataFromPython() {
   Python으로 부터 값을 받아온후 실행하게 될 함수.
 */
 void mainFunction(char data) {
-
-  /*
-    만약 작동 안되면 isPressedSwitch() 함수에서 매개변수 ezButton &Switch 로 바꿔보기  
-  */
-  if (LSwitchX.isPressed() || LSwitchY.isPressed() || LSwitchZ.isPressed()) {
-    X_Stepper.stop();
-    Test_Stepper.stop();
-    Y_Stepper.stop();
-    Z_Stepper.stop();
-    A_Stepper.stop();
-    Serial.println(F("The limit switchButton: TOUCHED"));
-  }
-
   switch (data) {
     case 'x':
       move_stepper(X_Stepper, 2500);
