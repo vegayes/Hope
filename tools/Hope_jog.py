@@ -18,7 +18,7 @@ class jog_hope:
         self.ui.jog_z_down_button.clicked.connect(self.jog_z_down)
         self.ui.jog_a_up_button.clicked.connect(self.jog_a_up)
         self.ui.jog_a_down_button.clicked.connect(self.jog_a_down)
-        self.ui.jog_azrn_button.clicked.connect(self.jog_azrn)
+        self.ui.jog_zero_setting_button.clicked.connect(self.jog_zero_setting)
 
     # JOG 함수 // speed랑 이런건 다시 설정하기!
     def jog_x_up(self):
@@ -69,3 +69,8 @@ class jog_hope:
         self.arduino = self.main.arduino
         self.arduino.send_data('f')
         self.main.statusBar().showMessage("AZRN")
+
+    def jog_zero_setting(self):
+        self.arduino = self.main.arduino
+        self.arduino.send_data('o')
+        self.main.statusBar().showMessage("Zero Setting <X axis = 0 , Y axis = 0 , Z axis = 0, A axis = 0> ")
