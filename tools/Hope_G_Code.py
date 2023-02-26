@@ -51,7 +51,7 @@ class G_code_hope:
 
         if self.count == 0:
             self.count = 1
-            th1 = Thread(target=self.thread, args=(text,))
+            th1 = Thread(target=self.thread, args=(text,), daemon=True)
             th1.start()
 
     def thread(self, text: list):

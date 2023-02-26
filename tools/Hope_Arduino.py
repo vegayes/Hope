@@ -26,7 +26,7 @@ class arduino_hope:
         self.serial.flushInput()
         time.sleep(0.5)
         self.receive_data()
-        th1 = Thread(target=self.loop_receive_data)
+        th1 = Thread(target=self.loop_receive_data, daemon=True)
         th1.start()
 
     def get_serial(self):
@@ -48,7 +48,7 @@ class arduino_hope:
     def loop_receive_data(self):
         while True:
             if self.serial.readable():
-                try :
+                try:
                     self.m = self.serial.readline()
                     text = self.m[:len(self.m) - 1].decode()
                     if len(text) != 0:
