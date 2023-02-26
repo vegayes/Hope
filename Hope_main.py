@@ -1,4 +1,5 @@
 import time
+import sys
 
 from PyQt5 import QtWidgets
 
@@ -27,6 +28,7 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
         self.G_codeClass = G_code_hope(self, self.ui)
 
         self.ui.connect_button.clicked.connect(self.connect)
+        self.ui.Quit_button.clicked.connect(self.Quit())
 
         self.port = self.portClass.get_port()
 
@@ -63,6 +65,12 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
                 raise CannotConnectException
         except AttributeError:
             self.statusBar().showMessage("보드를 연결 시킨 후 정확하게 포트와 연결하세요.")
+
+    # def Quit(self):
+    #     self.close()
+    #     sys.exit(app.exec_())
+    #     print('Window closed')
+
 
 
 def main():
