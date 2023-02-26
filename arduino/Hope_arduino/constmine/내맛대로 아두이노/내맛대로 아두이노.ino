@@ -21,6 +21,9 @@
 
 float steps = 10;  // JOG이동 시, 고정값 (step * 5) 1step per 1mm distance 그러면 G코드 라고 생각하면 ??
 
+long StartTime = 0;
+
+
 // define motor
 AccelStepper Test_Stepper(HALFSTEP, 8, 10, 9, 11);           // 28motor(8, IN1, IN3, IN2, In4)
 AccelStepper X_Stepper(AccelStepper::DRIVER, X_STP, X_DIR);  // X motor
@@ -50,6 +53,8 @@ void setup() {
   LSwitchX.setDebounceTime(50);
   LSwitchY.setDebounceTime(50);
   // LSwitchZ.setDebounceTime(50);
+
+  StartTime = millis();
 }
 
 void loop() {
@@ -78,8 +83,10 @@ void loop() {
   X_Stepper.run();
   Y_Stepper.run();
 
-  
-  print_position("X", X_Stepper.currentPosition(), "<d>");
+  if((millis() - StartTime) >= 50) {
+    StartTime = millis();  
+    print_position("X", X_Stepper.currentPosition(), "<d>");
+  }
 }
 
 
