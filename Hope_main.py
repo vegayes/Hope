@@ -28,7 +28,7 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
         self.G_codeClass = G_code_hope(self, self.ui)
 
         self.ui.connect_button.clicked.connect(self.connect)
-        self.ui.Quit_button.clicked.connect(self.Quit())
+        self.ui.Quit_button.clicked.connect(self.Quit)
 
         self.port = self.portClass.get_port()
 
@@ -46,6 +46,9 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
                 self.ui.connect_button.setEnabled(False)
                 time.sleep(1.2)
                 self.statusBar().showMessage("아두이노와 연결이 되었습니다. ")
+                self.ui.JOG_Group.setEnabled(True)
+                self.ui.Position_Group.setEnabled(True)
+                self.ui.Auto_Group.setEnabled(True)
             except:
                 self.statusBar().showMessage("아두이노와 연결이 되지 않았습니다.")
                 print("아두이노와 연결이 되지 않았습니다.")
@@ -54,10 +57,11 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
         except AttributeError:
             self.statusBar().showMessage("보드를 연결 시킨 후 정확하게 포트와 연결하세요.")
 
-    # def Quit(self):
-    #     self.close()
-    #     sys.exit(app.exec_())
-    #     print('Window closed')
+    def Quit(self):
+        print("Program Closed")
+        sys.exit()
+
+
 
 
 
