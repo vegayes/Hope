@@ -24,51 +24,51 @@ class jog_hope:
     # JOG 함수 // speed랑 이런건 다시 설정하기!
     def jog_x_up(self):
         self.arduino = self.main.arduino
-        self.arduino.send_data('x')
+        self.arduino.send_data("x\n")
         self.main.statusBar().showMessage("Jog_X +")
 
     def jog_x_down(self):
         self.arduino = self.main.arduino
-        self.arduino.send_data('b')
+        self.arduino.send_data("b\n")
         self.main.statusBar().showMessage("Jog_X -")
 
 
     def jog_y_up(self):
         self.arduino = self.main.arduino
-        self.arduino.send_data('y')
+        self.arduino.send_data("y\n")
         self.main.statusBar().showMessage("Jog_Y +")
 
     def jog_y_down(self):
         self.arduino = self.main.arduino
-        self.arduino.send_data('c')
+        self.arduino.send_data("c\n")
         self.main.statusBar().showMessage("Jog_Y -")
 
     def jog_z_up(self):
         self.arduino = self.main.arduino
-        self.arduino.send_data('z')
+        self.arduino.send_data("z\n")
         self.main.statusBar().showMessage("Jog_Z +")
 
     def jog_z_down(self):
         self.arduino = self.main.arduino
-        self.arduino.send_data('d')
+        self.arduino.send_data("d\n")
         self.main.statusBar().showMessage("Jog_Z -")
 
     def jog_a_up(self):
         self.arduino = self.main.arduino
-        self.arduino.send_data('a')
+        self.arduino.send_data("a\n")
         self.main.statusBar().showMessage("Jog_A +")
 
     def jog_a_down(self):
         self.arduino = self.main.arduino
-        self.arduino.send_data('e')
+        self.arduino.send_data("e\n")
         self.main.statusBar().showMessage("Jog_A -")
 
     def jog_azrn(self):
         self.arduino = self.main.arduino
-        self.arduino.send_data('f')
+        self.arduino.send_data("f\n")
         self.main.statusBar().showMessage("AZRN")
 
     def jog_zero_setting(self):
         self.arduino = self.main.arduino
-        self.arduino.send_data('o')
+        self.arduino.send_data("o\n")
         self.main.statusBar().showMessage("Zero Setting <X axis = 0 , Y axis = 0 , Z axis = 0, A axis = 0> ")

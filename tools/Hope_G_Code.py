@@ -20,6 +20,7 @@ class G_code_hope:
         self.ui.File_open_button.clicked.connect(self.open_button)
         self.ui.Auto_start_button.clicked.connect(self.Auto_start)
         self.ui.Auto_stop_button.clicked.connect(self.Auto_stop)
+        self.ui.Option_form_button.clicked.connect(self.ui.openHope2)
 
     def open_button(self):
         fname = QFileDialog.getOpenFileName(self.main, 'Open file', './')
@@ -43,7 +44,7 @@ class G_code_hope:
             print("파일을 고르지 않음")
 
     def Auto_start(self):  # Auto Start 버튼을 누르면 텍스트 값이 이동을 함.
-        # self.main.statusBar().showMessage("AUTO START")      #ProgressBar와 함께 사용시 에러뜸 Bar안에 statusBar 값이 떠버림..
+        # self.main.statusBar().showMessage("AUTO START")  # ProgressBar와 함께 사용시 에러뜸 Bar안에 statusBar 값이 떠버림..
         self.arduino = self.main.arduino
         text = self.ui.G_code_upload.toPlainText()
         text = text.splitlines()
@@ -59,12 +60,12 @@ class G_code_hope:
         for Gline in text:
             while not self.ok:
                 pass
-            Gline = Gline + ";"
+            Gline = "<G>" + Gline + ";\n"
             self.arduino.send_data(Gline)
             i += 1
             self.pbar.setValue(int((i / len(text)) * 100))
             print(Gline)
-            time.sleep(0.2)
+            time.sleep(0.7)
 
     def Auto_stop(self):
         self.arduino = self.main.arduino

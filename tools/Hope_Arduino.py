@@ -35,7 +35,7 @@ class arduino_hope:
     def get_serial(self):
         return self.serial
 
-    def send_data(self, message):
+    def send_data(self, message: str):
         message = message.encode("utf-8")
         self.serial.write(message)
 
