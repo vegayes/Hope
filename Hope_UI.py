@@ -7,10 +7,15 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from Hope2_UI import Ui_HOPE2
 
 class Ui_HOPE(object):
 
+    def openHope2(self):
+        self.window = QtWidgets.QDialog()
+        self.ui = Ui_HOPE2()
+        self.ui.setupUi(self.window)
+        self.window.show()
     def setupUi(self, HOPE):
         HOPE.setObjectName("HOPE")
         HOPE.resize(1477, 844)

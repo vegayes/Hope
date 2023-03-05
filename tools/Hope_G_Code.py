@@ -20,6 +20,7 @@ class G_code_hope:
         self.ui.File_open_button.clicked.connect(self.open_button)
         self.ui.Auto_start_button.clicked.connect(self.Auto_start)
         self.ui.Auto_stop_button.clicked.connect(self.Auto_stop)
+        self.ui.Option_form_button.clicked.connect(self.ui.openHope2)
 
     def open_button(self):
         fname = QFileDialog.getOpenFileName(self.main, 'Open file', './')
@@ -71,3 +72,4 @@ class G_code_hope:
         self.arduino.send_data('p')
         self.main.statusBar().showMessage("S T O P")
         self.ok = False
+
