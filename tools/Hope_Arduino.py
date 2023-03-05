@@ -21,7 +21,7 @@ class arduino_hope:
     def setting_arduino(self):
         self.serial = serial.Serial()
         self.serial.port = self.main.port
-        self.serial.baudrate = 115200
+        self.serial.baudrate = 230400
         self.serial.parity = serial.PARITY_NONE
         self.serial.stopbits = serial.STOPBITS_ONE
         self.serial.bytesize = serial.EIGHTBITS
@@ -76,4 +76,10 @@ class arduino_hope:
 
         if axis == 'X':
             self.pos.set_x_position(int(value))
+        elif axis == 'Y':
+            self.pos.set_y_position(int(value))
+        elif axis == 'Z':
+            self.pos.set_z_position(int(value))
+        elif axis == 'A':
+            self.pos.set_a_position(int(value))
 
