@@ -1,3 +1,5 @@
+//이동값 직접 지정 제발 정상 동작할 수 있게 해주세요.
+
 #include <GCodeParser.h>
 
 #include <ezButton.h>
@@ -25,6 +27,12 @@ float steps = 10;  // JOG이동 시, 고정값 (step * 5) 1step per 1mm distance
 long StartTime = 0;
 bool isStopped = false;  // stop 인식
 
+// 초기 위치 설정
+int current_x = 0;
+int current_y = 0;
+int current_z = 0;
+int current_a = 0;
+
 // define motor
 AccelStepper Test_Stepper(HALFSTEP, 8, 10, 9, 11);           // 28motor(8, IN1, IN3, IN2, In4)
 AccelStepper X_Stepper(AccelStepper::DRIVER, X_STP, X_DIR);  // X motor
@@ -46,7 +54,7 @@ void setup() {
   Serial.begin(BAUD_RATE);
   Serial.println("시리얼을 보냄....");
   //set_StepperSetting(AccelStepper &stepper, int Speed, int accel)
-  set_StepperSetting(Test_Stepper, 500, 800);
+//  set_StepperSetting(Test_Stepper, 500, 800);
   set_StepperSetting(X_Stepper, 500, 550); // 1200, 1250 
   set_StepperSetting(Y_Stepper, 2200, 1800); // 2200 ,1800
   set_StepperSetting(Z_Stepper, 8000, 8000); // 8000, 8000
@@ -201,23 +209,46 @@ void GCodeFunction() {
   Serial.println(GCode.line);
   if (GCode.HasWord('G')) {
     if (GCode.GetWordValue('G') == 1) {
-      float x = getValue(line, 'X');  // X 값을 가져옵니다.
-      float y = getValue(line, 'Y');  // Y 값을 가져옵니다.
-      float z = getValue(line, 'Z');  // Z 값을 가져옵니다.
-      float a = getValue(line, 'A');  // A 값을 가져옵니다.
+      float update_x = getValue(line, 'X');  // X 값을 가져옵니다.
+      float update_y = getValue(line, 'Y');  // Y 값을 가져옵니다.
+      float update_z = getValue(line, 'Z');  // Z 값을 가져옵니다.
+      float update_a = getValue(line, 'A');  // A 값을 가져옵니다.
 
-      if (!isnan(x)) {
-        X_Stepper.moveTo(x * 10);
+      // X축, Y축 이동 거리 계산
+      int xdist = update_x  - current_x;//X_Stepper.currentPosition(); 도 해봤는데 안됨.
+      int ydist = update_y  - current_y;//Y_Stepper.currentPosition();
+      int zdist = update_z  - current_z; //Z_Stepper.currentPosition();
+      int adist = update_a  - current_a;//A_Stepper.currentPosition();
+
+      if (!isnan(update_x)) {
+        X_Stepper.move(xdist * 10);
+        current_x = update_x;
       }
-      if (!isnan(y)) {
-        Y_Stepper.moveTo(y * 10);
+      if (!isnan(update_y)) {
+        Y_Stepper.move(ydist * 10);
+        current_y = update_y;
       }
-      if (!isnan(z)) {
-        Z_Stepper.moveTo(z * 10);
+      if (!isnan(update_z)) {
+        Z_Stepper.move(zdist * 10);
+        current_z = update_z;
       }
-      if (!isnan(a)) {
-        A_Stepper.moveTo(a * 10);
+      if (!isnan(update_a)) {
+        A_Stepper.move(adist * 10);
+        current_a = update_a;
       }
+
+      Serial.println(update_x);
+      Serial.println(update_y);
+      Serial.println(xdist);
+      Serial.println(ydist);
+      Serial.println(current_x);
+      Serial.println(current_y);
+//      if (!isnan(update_z)) {
+//        Z_Stepper.moveTo(zdist * 100);
+//      }
+//      if (!isnan(update_a)) {
+//        A_Stepper.moveTo(adist * 100);
+//      }
     }
   }
 
