@@ -65,7 +65,7 @@ class G_code_hope:
             i += 1
             self.pbar.setValue(int((i / len(text)) * 100))
             print(Gline)
-            time.sleep(0.7)
+            time.sleep(1)
 
     def Auto_stop(self):
         self.arduino = self.main.arduino

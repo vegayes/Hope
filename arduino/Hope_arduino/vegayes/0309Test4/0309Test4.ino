@@ -1,3 +1,4 @@
+// 위치 값 변경 실패 왜 getValue 를 인식 못하는거지?
 #include <GCodeParser.h>
 
 #include <ezButton.h>
@@ -25,6 +26,14 @@ float steps = 10;  // JOG이동 시, 고정값 (step * 5) 1step per 1mm distance
 long StartTime = 0;
 bool isStopped = false;  // stop 인식
 
+
+// 초기 위치 설정
+int current_x = 0;
+int current_y = 0;
+int current_z = 0;
+int current_a = 0;
+
+
 // define motor
 AccelStepper Test_Stepper(HALFSTEP, 8, 10, 9, 11);           // 28motor(8, IN1, IN3, IN2, In4)
 AccelStepper X_Stepper(AccelStepper::DRIVER, X_STP, X_DIR);  // X motor
@@ -41,13 +50,34 @@ ezButton LSwitchZ(limitZ);
 
 GCodeParser GCode = GCodeParser();
 
+void move_stepper(AccelStepper &stepper, long value) {
+  if (stepper.distanceToGo() == 0) {
+    stepper.move(value);
+  }
+}
+
+void print_position(String axis, int value, String type) {
+  Serial.println((String)type + "현재 " + axis + "축 위치 :" + value);
+}
+
+/*
+  모터 초기 세팅 함수
+  @param stepper : 설정할 모터
+         maxSpeed : 최대 속도
+         accel : 가속도
+*/
+
+void set_StepperSetting(AccelStepper &stepper, int Speed, int accel) {
+  stepper.setMaxSpeed(Speed);
+  stepper.setAcceleration(accel);
+}
 
 void setup() {
   Serial.begin(BAUD_RATE);
   Serial.println("시리얼을 보냄....");
   //set_StepperSetting(AccelStepper &stepper, int Speed, int accel)
   set_StepperSetting(Test_Stepper, 500, 800);
-  set_StepperSetting(X_Stepper, 500, 550); // 1200, 1250 
+  set_StepperSetting(X_Stepper, 1000, 1200); // 1200, 1250
   set_StepperSetting(Y_Stepper, 2200, 1800); // 2200 ,1800
   set_StepperSetting(Z_Stepper, 8000, 8000); // 8000, 8000
   set_StepperSetting(A_Stepper, 500, 500); // 500, 500
@@ -98,23 +128,10 @@ void loop() {
   }
 }
 
-/*
-  모터 초기 세팅 함수
-  @param stepper : 설정할 모터
-         maxSpeed : 최대 속도
-         accel : 가속도
-*/
-
-void set_StepperSetting(AccelStepper &stepper, int Speed, int accel) {
-  stepper.setMaxSpeed(Speed);
-  stepper.setAcceleration(accel);
-}
-
 
 /*
   파이썬으로부터 값을 받아오는 함수
 */
-
 void getDataFromPython() {
   if (Serial.available() > 0) {
     if (GCode.AddCharToLine(Serial.read())) {
@@ -201,27 +218,75 @@ void GCodeFunction() {
   Serial.println(GCode.line);
   if (GCode.HasWord('G')) {
     if (GCode.GetWordValue('G') == 1) {
-      float x = getValue(line, 'X');  // X 값을 가져옵니다.
-      float y = getValue(line, 'Y');  // Y 값을 가져옵니다.
-      float z = getValue(line, 'Z');  // Z 값을 가져옵니다.
-      float a = getValue(line, 'A');  // A 값을 가져옵니다.
+      float update_x = getValue(line, 'X');  // X 값을 가져옴
+      float update_y = getValue(line, 'Y');  // Y 값을 가져옴
+      float update_z = getValue(line, 'Z');  // Z 값을 가져옴
+      float update_a = getValue(line, 'A');  // A 값을 가져옴
+      //      float update_f = getValue(line, 'F');  // F값을 가져옴
 
-      if (!isnan(x)) {
-        X_Stepper.moveTo(x * 10);
+      // 이동 거리 계산
+      int xdist = update_x - current_x;
+      int ydist = update_y - current_y;
+      int zdist = update_z - current_z;
+      int adist = update_a - current_a;
+
+
+      // X축 이동
+      if (xdist != 0) {
+        int xsteps = xdist * 400 / 200; // stepsPerRevolution / 200 ??
+        X_Stepper.move(xsteps); // step function
+        current_x = update_x;
       }
-      if (!isnan(y)) {
-        Y_Stepper.moveTo(y * 10);
+
+      // Y축 이동
+      if (ydist != 0) {
+        int ysteps = ydist * 400 / 200; // stepsPerRevolution / 200 ??
+        Y_Stepper.move(ysteps); // step function
+        current_y = update_y;
       }
-      if (!isnan(z)) {
-        Z_Stepper.moveTo(z * 10);
+
+      // Z축 이동
+      if (zdist != 0) {
+        int zsteps = zdist * 400 / 200; // stepsPerRevolution / 200 ??
+        Z_Stepper.move(zsteps); // step function
+        current_z = update_z;
       }
-      if (!isnan(a)) {
-        A_Stepper.moveTo(a * 10);
+
+      // A축 이동
+      if (adist != 0) {
+        int asteps = adist * 400 / 200; // stepsPerRevolution / 200 ??
+        A_Stepper.move(asteps); // step function
+        current_a = update_a;
       }
+
+      Serial.println(update_x);
+      Serial.println(update_y);
+      Serial.println(xdist);
+      Serial.println(ydist);
+      Serial.println(current_x);
+      Serial.println(current_y);
+
+
+      //      if (!isnan(current_x)) {
+      //        X_Stepper.moveTo(current_x * 100);
+      //      }
+      //      if (!isnan(current_y)) {
+      //        Y_Stepper.moveTo(current_y * 100);
+      //      }
+      //      if (!isnan(current_z)) {
+      //        Z_Stepper.moveTo(current_z * 100);
+      //      }
+      //      if (!isnan(current_a)) {
+      //        A_Stepper.moveTo(current_a * 100);
+      //      }
+      //      if (!isnan(change_f)) { // 한번에 바꾸고 싶은데,,ㅎ
+      //        X_Stepper.setSpeed(change_f / 60.0);
+      //        Y_Stepper.setSpeed(change_f / 60.0);
     }
   }
-
 }
+}
+
 
 float getValue(String data, char separator) {
   String value = "";
@@ -235,19 +300,4 @@ float getValue(String data, char separator) {
     }
   }
   return value.toFloat();
-}
-
-void move_stepper(AccelStepper &stepper, long value) {
-  if (stepper.distanceToGo() == 0) {
-    stepper.move(value);
-  }
-}
-
-
-// void print_position(AccelStepper &stepper, String axis) {
-//   Serial.println((String) "현재 " + axis + "축 위치 :" + stepper.currentPosition());
-// }
-
-void print_position(String axis, int value, String type) {
-  Serial.println((String)type + "현재 " + axis + "축 위치 :" + value);
 }
