@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import *
 
 import Hope_UI
 import Hope_main
+from display import Hope_ProgressBar
 from threads import progressbar
 
 
@@ -11,6 +12,7 @@ class G_code_hope:
         self.main = main
         self.ui = ui
 
+        self.pbar = Hope_ProgressBar.ProgressBar_Hope(main, ui)
         self.progressThread = progressbar.ProGressBar_Thread(self.main, self.ui)
 
         self.ui.File_open_button.clicked.connect(self.open_button)
@@ -38,13 +40,14 @@ class G_code_hope:
                 self.ui.G_code_upload.append("M30")  # 끝내기
 
     def Auto_start(self):  # Auto Start 버튼을 누르면 텍스트 값이 이동을 함.
-        # self.main.statusBar().showMessage("AUTO START")  # ProgressBar와 함께 사용시 에러뜸 Bar안에 statusBar 값이 떠버림..
+        # self.main.statusBar().showMessage("AUTO START")       # 에러 뜸
         self.arduino = self.main.arduino
         text = self.ui.G_code_upload.toPlainText()
         lines = text.splitlines()
 
         if not self.progressThread.isRunning():
             self.progressThread.setText(lines)
+            self.progressThread.finished.connect(self.pbar.setValue)
             self.progressThread.start()
         else:
             self.progressThread.reRun()

@@ -3,10 +3,11 @@ import time
 from PyQt5.QtCore import QThread, pyqtSignal
 import Hope_main
 import Hope_UI
-from display import Hope_ProgressBar
 
 
 class ProGressBar_Thread(QThread):
+    finished = pyqtSignal(int)
+
     def __init__(self, parent: Hope_main.UI_Window, ui: Hope_UI.Ui_HOPE):
         super().__init__(parent)
         self.main = parent
@@ -14,8 +15,6 @@ class ProGressBar_Thread(QThread):
         self.running = True
         self.lines = None
         self.stop = False
-
-        self.pbar = Hope_ProgressBar.ProgressBar_Hope(parent, ui)
 
     def run(self):
         self.receiveDate = self.main.arduino.getReceiveDateThread()
@@ -31,11 +30,11 @@ class ProGressBar_Thread(QThread):
             line = Gline
             Gline = "<G>" + Gline + ";\n"
             self.main.arduino.send_data(Gline)
-            self.pbar.setValue(int(((i + 1) / len(self.lines)) * 100))
+            self.finished.emit((int(((i + 1) / len(self.lines)) * 100)))
+            # self.pbar.setValue(int(((i + 1) / len(self.lines)) * 100))
             self.ui.G_code_read.append(line)
             if self.stop:
                 break
-
 
     # 필수 호출 함수
     def setText(self, lines: list):
@@ -54,5 +53,3 @@ class ProGressBar_Thread(QThread):
         self.pbar.setValue(0)
         self.ui.G_code_read.setText("")
         time.sleep(0.3)
-
-

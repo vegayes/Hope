@@ -2,6 +2,7 @@ import Hope_UI
 import Hope_main
 from PyQt5.Qt import *
 
+
 class ProgressBar_Hope:
     def __init__(self, main: Hope_main.UI_Window, ui: Hope_UI.Ui_HOPE):
         self.ui = ui
@@ -17,4 +18,3 @@ class ProgressBar_Hope:
 
     def getValue(self):
         return self.pbar.value()
-
