@@ -13,7 +13,7 @@ class ProgressBar_Hope:
         self.pbar.setRange(0, 100)
 
     def setValue(self, a: int):
-        self.pbar.setProperty("value", a)
+        self.pbar.setValue(a)
 
     def getValue(self):
         return self.pbar.value()

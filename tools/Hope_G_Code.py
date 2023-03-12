@@ -1,9 +1,8 @@
+from PyQt5.QtWidgets import *
+
 import Hope_UI
 import Hope_main
-from threading import Thread
-from PyQt5.QtWidgets import *
-import time
-from display import Hope_ProgressBar
+from threads import progressbar
 
 
 class G_code_hope:
@@ -11,11 +10,8 @@ class G_code_hope:
     def __init__(self, main: Hope_main.UI_Window, ui: Hope_UI.Ui_HOPE):
         self.main = main
         self.ui = ui
-        self.ok = True
-        self.count = 0
-        self.num = 0
 
-        self.pbar = Hope_ProgressBar.ProgressBar_Hope(main, ui)
+        self.progressThread = progressbar.ProGressBar_Thread(self.main, self.ui)
 
         self.ui.File_open_button.clicked.connect(self.open_button)
         self.ui.Auto_start_button.clicked.connect(self.Auto_start)
@@ -47,28 +43,17 @@ class G_code_hope:
         # self.main.statusBar().showMessage("AUTO START")  # ProgressBar와 함께 사용시 에러뜸 Bar안에 statusBar 값이 떠버림..
         self.arduino = self.main.arduino
         text = self.ui.G_code_upload.toPlainText()
-        text = text.splitlines()
-        self.ok = True
+        lines = text.splitlines()
 
-        if self.count == 0:
-            self.count = 1
-            th1 = Thread(target=self.thread, args=(text,), daemon=True)
-            th1.start()
+        if not self.progressThread.isRunning():
+            self.progressThread.setText(lines)
+            self.progressThread.start()
+        else :
+            self.progressThread.reRun()
 
-    def thread(self, text: list):
-        i = 0
-        for Gline in text:
-            while not self.ok:
-                pass
-            Gline = "<G>" + Gline + ";\n"
-            self.arduino.send_data(Gline)
-            i += 1
-            self.pbar.setValue(int((i / len(text)) * 100))
-            print(Gline)
-            time.sleep(1)
 
     def Auto_stop(self):
         self.arduino = self.main.arduino
-        self.arduino.send_data('p')
+        self.arduino.send_data("p\n")
         self.main.statusBar().showMessage("S T O P")
-        self.ok = False
+        self.progressThread.runPause()

@@ -27,6 +27,9 @@ float steps = 10;  // JOG이동 시, 고정값 (step * 5) 1step per 1mm distance
 long StartTime = 0;
 bool isStopped = false;  // stop 인식
 
+int G_count = 0;     //G코드 몇번 돌았는지
+bool can_G = false;  //G코드 인식 값
+
 // 초기 위치 설정
 int current_x = 0;
 int current_y = 0;
@@ -40,8 +43,6 @@ AccelStepper Y_Stepper(AccelStepper::DRIVER, Y_STP, Y_DIR);  // Y motor
 AccelStepper Z_Stepper(AccelStepper::DRIVER, Z_STP, Z_DIR);  // Z motor
 AccelStepper A_Stepper(AccelStepper::DRIVER, A_STP, A_DIR);  // A motor
 
-AccelStepper *steppers[5] = { &Test_Stepper, &X_Stepper, &Y_Stepper, &Z_Stepper, &A_Stepper };
-
 // define limite switch
 ezButton LSwitchX(limitX);
 ezButton LSwitchY(limitY);
@@ -54,11 +55,11 @@ void setup() {
   Serial.begin(BAUD_RATE);
   Serial.println("시리얼을 보냄....");
   //set_StepperSetting(AccelStepper &stepper, int Speed, int accel)
-//  set_StepperSetting(Test_Stepper, 500, 800);
-  set_StepperSetting(X_Stepper, 500, 550); // 1200, 1250 
-  set_StepperSetting(Y_Stepper, 2200, 1800); // 2200 ,1800
-  set_StepperSetting(Z_Stepper, 8000, 8000); // 8000, 8000
-  set_StepperSetting(A_Stepper, 500, 500); // 500, 500
+  set_StepperSetting(Test_Stepper, 500, 550);
+  set_StepperSetting(X_Stepper, 500, 550);    // 1200, 1250
+  set_StepperSetting(Y_Stepper, 2200, 1800);  // 2200 ,1800
+  set_StepperSetting(Z_Stepper, 8000, 8000);  // 8000, 8000
+  set_StepperSetting(A_Stepper, 500, 500);    // 500, 500
 
   LSwitchX.setDebounceTime(50);
   LSwitchY.setDebounceTime(50);
@@ -103,6 +104,13 @@ void loop() {
     print_position("Y", Y_Stepper.currentPosition(), "<d>");
     print_position("Z", Z_Stepper.currentPosition(), "<d>");
     print_position("A", A_Stepper.currentPosition(), "<d>");
+    if ((current_x * 10 == X_Stepper.currentPosition()) && (current_y * 10 == Y_Stepper.currentPosition()) && (current_z * 10 == Z_Stepper.currentPosition()) && (current_a * 10 == A_Stepper.currentPosition())) {
+      if (can_G == true) {
+        G_count += 1;
+        Serial.println((String) "<g>" + G_count);
+        can_G = false;
+      }
+    }
   }
 }
 
@@ -148,14 +156,14 @@ void mainFunction() {
 
   if (line == "x") {
     move_stepper(X_Stepper, 1000);
-    move_stepper(Test_Stepper, 500);
+    move_stepper(Test_Stepper, 1000);
     print_position("X", X_Stepper.currentPosition() + 1000, "<c>");
-    print_position("Test", Test_Stepper.currentPosition() + 500, "<c>");
+    print_position("Test", Test_Stepper.currentPosition() + 1000, "<c>");
   } else if (line == "b") {
     move_stepper(X_Stepper, -1000);
-    move_stepper(Test_Stepper, -500);
+    move_stepper(Test_Stepper, -1000);
     print_position("X", X_Stepper.currentPosition() - 1000, "<c>");
-    print_position("Test", Test_Stepper.currentPosition() - 500, "<c>");
+    print_position("Test", Test_Stepper.currentPosition() - 1000, "<c>");
   } else if (line == "y") {
     move_stepper(Y_Stepper, -1000);
     print_position("Y", Y_Stepper.currentPosition() - 1000, "<c>");
@@ -215,10 +223,10 @@ void GCodeFunction() {
       float update_a = getValue(line, 'A');  // A 값을 가져옵니다.
 
       // X축, Y축 이동 거리 계산
-      int xdist = update_x  - current_x;//X_Stepper.currentPosition(); 도 해봤는데 안됨.
-      int ydist = update_y  - current_y;//Y_Stepper.currentPosition();
-      int zdist = update_z  - current_z; //Z_Stepper.currentPosition();
-      int adist = update_a  - current_a;//A_Stepper.currentPosition();
+      int xdist = update_x - current_x;  //X_Stepper.currentPosition(); 도 해봤는데 안됨.
+      int ydist = update_y - current_y;  //Y_Stepper.currentPosition();
+      int zdist = update_z - current_z;  //Z_Stepper.currentPosition();
+      int adist = update_a - current_a;  //A_Stepper.currentPosition();
 
       if (!isnan(update_x)) {
         X_Stepper.move(xdist * 10);
@@ -237,21 +245,16 @@ void GCodeFunction() {
         current_a = update_a;
       }
 
-      Serial.println(update_x);
-      Serial.println(update_y);
-      Serial.println(xdist);
-      Serial.println(ydist);
-      Serial.println(current_x);
-      Serial.println(current_y);
-//      if (!isnan(update_z)) {
-//        Z_Stepper.moveTo(zdist * 100);
-//      }
-//      if (!isnan(update_a)) {
-//        A_Stepper.moveTo(adist * 100);
-//      }
+      can_G = true;
+
+      //      if (!isnan(update_z)) {
+      //        Z_Stepper.moveTo(zdist * 100);
+      //      }
+      //      if (!isnan(update_a)) {
+      //        A_Stepper.moveTo(adist * 100);
+      //      }
     }
   }
-
 }
 
 float getValue(String data, char separator) {
