@@ -18,6 +18,3 @@ class ProgressBar_Hope:
     def getValue(self):
         return self.pbar.value()
 
-    def resetProgress(self):
-        self.ui.G_code_progressBar.reset()
-

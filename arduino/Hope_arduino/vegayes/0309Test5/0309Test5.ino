@@ -98,7 +98,7 @@ void loop() {
   Z_Stepper.run();
   A_Stepper.run();
 
-  if ((millis() - StartTime) >= 50) {
+  if ((millis() - StartTime) >= 25) {
     StartTime = millis();
     print_position("X", X_Stepper.currentPosition(), "<d>");
     print_position("Y", Y_Stepper.currentPosition(), "<d>");
@@ -151,8 +151,8 @@ void mainFunction() {
     GCodeFunction();
     return;
   }
+
   String line = GCode.line;
-  Serial.println(GCode.line);
 
   if (line == "x") {
     move_stepper(X_Stepper, 1000);
