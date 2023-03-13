@@ -1,3 +1,5 @@
+import time
+
 from PyQt5.QtWidgets import *
 
 import Hope_UI
@@ -14,6 +16,8 @@ class G_code_hope:
 
         self.pbar = Hope_ProgressBar.ProgressBar_Hope(main, ui)
         self.progressThread = progressbar.ProGressBar_Thread(self.main, self.ui)
+        self.progressThread.pbar.connect(self.pbar.setValue)
+        self.progressThread.read.connect(self.ui.G_code_read.setText)
 
         self.ui.File_open_button.clicked.connect(self.open_button)
         self.ui.Auto_start_button.clicked.connect(self.Auto_start)
@@ -31,7 +35,16 @@ class G_code_hope:
                 data = data[:-4]  # 맨 마지막 줄 없애기 M30
                 # data = data.replace('M30', '') # M30지우기 but
 
+                #Todo 여기중 하나가 작동되어 새로운 시작 가능 이건 나중에 추후 차근히 해보자고
                 if self.progressThread.isRunning():
+                    self.progressThread.runPause()
+                    self.progressThread.runBreak()
+                    # self.progressThread.reset()
+                    self.progressThread.requestInterruption()
+                    self.progressThread.terminate()
+                    self.progressThread.wait()
+                    self.progressThread.reset()
+                    self.progressThread = progressbar.ProGressBar_Thread(self.main, self.ui)
                     self.progressThread.reset()
 
                 self.ui.G_code_upload.setText(data)
@@ -47,7 +60,6 @@ class G_code_hope:
 
         if not self.progressThread.isRunning():
             self.progressThread.setText(lines)
-            self.progressThread.finished.connect(self.pbar.setValue)
             self.progressThread.start()
         else:
             self.progressThread.reRun()
