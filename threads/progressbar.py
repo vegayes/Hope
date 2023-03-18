@@ -20,7 +20,7 @@ class ProGressBar_Thread(QThread):
     def run(self):
         self.receiveDate = self.main.arduino.getReceiveDateThread()
         for i, Gline in enumerate(self.lines):
-            while i != self.receiveDate.get_progress_count():
+            while not self.receiveDate.can_G:
                 time.sleep(0.3)
                 if self.stop:
                     break
@@ -34,6 +34,8 @@ class ProGressBar_Thread(QThread):
             self.pbar.emit((int(((i + 1) / len(self.lines)) * 100)))
             # self.pbar.setValue(int(((i + 1) / len(self.lines)) * 100))
             self.ui.G_code_read.append(line)
+            self.receiveDate.can_G = False
+
             if self.stop:
                 break
 
@@ -52,7 +54,8 @@ class ProGressBar_Thread(QThread):
 
     def reset(self):
         self.running = False
-        self.stop = True
+        self.stop = False
+        self.receiveDate.can_G = True
         self.pbar.emit(0)
         self.read.emit("")
         time.sleep(0.3)

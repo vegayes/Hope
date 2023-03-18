@@ -8,7 +8,7 @@ class ReceiveData(QThread):
 
     def __init__(self, parent: Hope_main.UI_Window, ui: Hope_UI.Ui_HOPE, serial):
         super().__init__(parent)
-        self.count = None
+        self.can_G = True  # 처음 호출시 True 여야함
         self.main = parent
         self.ui = ui
         self.serial = serial  # self.serial = self.main.serial 도 같은 의미일듯?
@@ -66,8 +66,6 @@ class ReceiveData(QThread):
         # GCode 한줄이 완성되었을 때
         # 처음에 1을 받아야함
         text = text.strip("<g>")
-        self.count = text
-        print("<G>" + self.count)
+        self.can_G = True
 
-    def get_progress_count(self):
-        return int(self.count)
+
