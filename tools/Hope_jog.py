@@ -32,7 +32,6 @@ class jog_hope:
         self.arduino.send_data("b\n")
         self.main.statusBar().showMessage("Jog_X -")
 
-
     def jog_y_up(self):
         self.arduino = self.main.arduino
         self.arduino.send_data("y\n")

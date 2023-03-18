@@ -63,8 +63,6 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
 
 
 
-
-
 def main():
     import sys
     app = QtWidgets.QApplication(sys.argv)

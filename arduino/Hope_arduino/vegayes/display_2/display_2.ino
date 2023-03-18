@@ -25,13 +25,13 @@ long StartTime = 0;
 
 
 // define motor
-AccelStepper Test_Stepper(HALFSTEP, 8, 10, 9, 11);           // 28motor(8, IN1, IN3, IN2, In4)
+//AccelStepper Test_Stepper(HALFSTEP, 8, 10, 9, 11);           // 28motor(8, IN1, IN3, IN2, In4)
 AccelStepper X_Stepper(AccelStepper::DRIVER, X_STP, X_DIR);  // X motor
 AccelStepper Y_Stepper(AccelStepper::DRIVER, Y_STP, Y_DIR);  // Y motor
 AccelStepper Z_Stepper(AccelStepper::DRIVER, Z_STP, Z_DIR);  // Z motor
 AccelStepper A_Stepper(AccelStepper::DRIVER, A_STP, A_DIR);  // A motor
 
-AccelStepper *steppers[5] = { &Test_Stepper, &X_Stepper, &Y_Stepper, &Z_Stepper, &A_Stepper };
+//AccelStepper *steppers[5] = { &Test_Stepper, &X_Stepper, &Y_Stepper, &Z_Stepper, &A_Stepper };
 
 // define limite switch
 ezButton LSwitchX(limitX);
@@ -45,7 +45,7 @@ void setup() {
   Serial.begin(BAUD_RATE);
   Serial.println("시리얼을 보냄....");
   //set_StepperSetting(AccelStepper &stepper, int Speed, int accel)
-  set_StepperSetting(Test_Stepper, 500, 800);
+//  set_StepperSetting(Test_Stepper, 500, 800);
   set_StepperSetting(X_Stepper, 500, 550); // 1000, 1300
   set_StepperSetting(Y_Stepper, 2200, 1800); // 1800, 2500
   set_StepperSetting(Z_Stepper, 8000, 8000); // 3000, 4000
@@ -152,7 +152,7 @@ void mainFunction(char data) {
       break;
     case 'a':
       move_stepper(A_Stepper, 10);
-      print_position("A", A_Stepper.currentPosition() + 10, "<c>");// (stepper4.currentPosition() * 0.9)
+      print_position("A", A_Stepper.currentPosition() + 10, "<c>");  // (stepper4.currentPosition() * 0.9)
       break;
     case 'e':
       move_stepper(A_Stepper, - 10);

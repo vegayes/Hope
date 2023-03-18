@@ -1,6 +1,3 @@
-
-
-
 f= open('Li','r')
 f_re = open('remaker.txt','w')
 
