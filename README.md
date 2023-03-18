@@ -132,9 +132,8 @@ Hope_Port 클래스에서 Port 를 찾고 실행하게 됨 . <br>
                 self.ui.G_code_upload.append("G01 Z0 A0")  # Z A 원점 복귀
                 self.ui.G_code_upload.append("M30")  # 끝내기
 ```
-UI에서 File Open 버튼을 눌렀을 때 실행하는 함수 <br>
 QFileDialog를 활용해 파일을 선택할 수 있음. <br>
-파일을 쓰기모드로 열고 with 이후 아래 코드 실행.
+파일을 읽기모드로 열고 with 이후 아래 코드 실행.
 ```python
                if self.progressThread.isRunning():
                     self.progressThread.runPause()
