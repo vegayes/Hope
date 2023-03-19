@@ -5,7 +5,7 @@
 #include <SoftwareSerial.h>
 
 #define HALFSTEP 8        //Half-step mode (8 step control signal sequence)
-#define BAUD_RATE 230400  // 보드레이트 230400 or 115200
+#define BAUD_RATE 115200  // 보드레이트 230400 or 115200
 
 #define X_DIR 5   // X axis, direction pin
 #define Y_DIR 6   // Y
@@ -21,7 +21,7 @@
 #define limitY 10
 #define limitZ 11
 
-float steps = 10;  // JOG이동 시, 고정값 (step * 5) 1step per 1mm distance 
+float steps = 10;  // JOG이동 시, 고정값 (step * 5) 1step per 1mm distance
 long StartTime = 0;
 bool isStopped = false;  // stop 인식
 
@@ -50,16 +50,23 @@ ezButton LSwitchZ(limitZ);
 
 GCodeParser GCode = GCodeParser();
 
+#define Xspeed 500
+#define Yspeed 2200
+#define Zspeed 8000
+#define Aspeed 500
+#define Gspeed 1000
+
+#define Gaccel 1000
 
 void setup() {
   Serial.begin(BAUD_RATE);
   Serial.println("시리얼을 보냄....");
   //set_StepperSetting(AccelStepper &stepper, int Speed, int accel)
   set_StepperSetting(Test_Stepper, 500, 800);
-  set_StepperSetting(X_Stepper, 500, 550); // 1200, 1250
-  set_StepperSetting(Y_Stepper, 2200, 1800); // 2200 ,1800
-  set_StepperSetting(Z_Stepper, 8000, 8000); // 8000, 8000
-  set_StepperSetting(A_Stepper, 500, 500); // 500, 500
+  set_StepperSetting(X_Stepper, Xspeed, 550);   // 1200, 1250
+  set_StepperSetting(Y_Stepper, Yspeed, 1800);  // 2200 ,1800
+  set_StepperSetting(Z_Stepper, Zspeed, 8000);  // 8000, 8000
+  set_StepperSetting(A_Stepper, Aspeed, 500);   // 500, 500
 
   LSwitchX.setDebounceTime(50);
   LSwitchY.setDebounceTime(50);
@@ -76,7 +83,6 @@ void loop() {
   LSwitchY.loop();
   LSwitchZ.loop();
 
-
   getDataFromPython();
 
   if (LSwitchX.isPressed() || LSwitchY.isPressed() || LSwitchZ.isPressed()) {
@@ -88,17 +94,7 @@ void loop() {
     Serial.println(F("The limit switchButton: TOUCHED"));
   }
 
-  //  for (int i = 0; i < 5; i++) {
-  //    steppers[i]->run();
-  //  }
-
-//  Test_Stepper.run();
-  X_Stepper.run();
-  Y_Stepper.run();
-  Z_Stepper.run();
-  A_Stepper.run();
-
-  if ((millis() - StartTime) >= 25) {
+  if ((millis() - StartTime) >= 75) {
     StartTime = millis();
     print_position("X", X_Stepper.currentPosition(), "<d>");
     print_position("Y", Y_Stepper.currentPosition(), "<d>");
@@ -107,13 +103,18 @@ void loop() {
 
 
     //예시,, current_x = update_x * 10;은 목표 값 vs X모터의 현재 위치 값을 비교
-    if ((current_x == X_Stepper.currentPosition()) && (current_y == Y_Stepper.currentPosition()) && (current_z == Z_Stepper.currentPosition()) && (current_a == A_Stepper.currentPosition())) {
+    if (X_Stepper.distanceToGo() == 0 && Y_Stepper.distanceToGo() == 0 && Z_Stepper.distanceToGo() == 0 && A_Stepper.distanceToGo() == 0) {
       if (can_G == true) {
         Serial.println((String) "<g>");
         can_G = false;
       }
     }
   }
+
+  X_Stepper.run();
+  Y_Stepper.run();
+  Z_Stepper.run();
+  A_Stepper.run();
 }
 
 /*
@@ -158,14 +159,14 @@ void mainFunction() {
 
   if (line == "x") {
     move_stepper(X_Stepper, 1000);
-//    move_stepper(Test_Stepper, 500);
+    //    move_stepper(Test_Stepper, 500);
     print_position("X", X_Stepper.currentPosition() + 1000, "<c>");
-//    print_position("Test", Test_Stepper.currentPosition() + 500, "<c>");
+    //    print_position("Test", Test_Stepper.currentPosition() + 500, "<c>");
   } else if (line == "b") {
     move_stepper(X_Stepper, -1000);
-//    move_stepper(Test_Stepper, -500);
+    //    move_stepper(Test_Stepper, -500);
     print_position("X", X_Stepper.currentPosition() - 1000, "<c>");
-//    print_position("Test", Test_Stepper.currentPosition() - 500, "<c>");
+    //    print_position("Test", Test_Stepper.currentPosition() - 500, "<c>");
   } else if (line == "y") {
     move_stepper(Y_Stepper, -1000);
     print_position("Y", Y_Stepper.currentPosition() - 1000, "<c>");
@@ -212,10 +213,15 @@ void mainFunction() {
     A_Stepper.setCurrentPosition(0);
     print_position("A", A_Stepper.currentPosition(), "<c>");
   } else if (line == "p") {
-    X_Stepper.stop();
-    Y_Stepper.stop();
-    Z_Stepper.stop();
-    A_Stepper.stop();
+    if (X_Stepper.distanceToGo() != 0) {
+      X_Stepper.stop();
+    } if (Y_Stepper.distanceToGo() != 0) {
+      Y_Stepper.stop();
+    } if (Z_Stepper.distanceToGo() != 0) {
+      Z_Stepper.stop();
+    } if (A_Stepper.distanceToGo() != 0) {
+      A_Stepper.stop();
+    } 
 
     current_x = X_Stepper.currentPosition();
     current_y = Y_Stepper.currentPosition();
@@ -233,43 +239,42 @@ void GCodeFunction() {
   Serial.println(GCode.line);
   if (GCode.HasWord('G')) {
     if (GCode.GetWordValue('G') == 0 || GCode.GetWordValue('G') == 1) {
+      float getX = 0;
+      float getY = 0;
+      float getZ = 0;
+      float getA = 0;
+      float getF = 1000;
+
+
       if (GCode.HasWord('X')) {
-        float x_update = GCode.GetWordValue('X');
-        X_Stepper.moveTo(x_update * 10);
-        current_x = x_update * 10;
-        Serial.println(x_update);
+        getX = GCode.GetWordValue('X');
+        X_Stepper.moveTo(getX * 10);
       }
       if (GCode.HasWord('Y')) {
-        float y_update = GCode.GetWordValue('Y');
-        Y_Stepper.moveTo(y_update * 10);
-        current_y = y_update * 10;
-        Serial.println(y_update);
+        getY = GCode.GetWordValue('Y');
+        Y_Stepper.moveTo(getY * 10);
       }
       if (GCode.HasWord('Z')) {
-        float z_update = GCode.GetWordValue('Z');
-        Z_Stepper.moveTo(z_update * 10);
-        current_z = z_update * 10;
-        Serial.println(z_update);
+        getZ = GCode.GetWordValue('Z');
+        Z_Stepper.moveTo(getZ * 10);
       }
       if (GCode.HasWord('A')) {
-        float a_update = GCode.GetWordValue('A');
-        A_Stepper.moveTo(a_update * 10);
-        current_a = a_update * 10;
-        Serial.println(a_update);
+        getA = GCode.GetWordValue('A');
+        A_Stepper.moveTo(getA * 10);
       }
-
-      can_G = true;
+      if (GCode.HasWord('F')) {
+        getF = GCode.GetWordValue('F');
+      }
     }
   }
 
   if (GCode.HasWord('M')) {
-    if (GCode.GetWordValue('M') == 30 ) { // 끝냄.
+    if (GCode.GetWordValue('M') == 30) {  // 끝냄.
       X_Stepper.stop();
       Y_Stepper.stop();
       Z_Stepper.stop();
       A_Stepper.stop();
 
-      can_G = true;
 
       // speed를 원래 값으로 다시 재설정
       X_Stepper.setSpeed(1000);
@@ -280,20 +285,8 @@ void GCodeFunction() {
       Serial.println("G_code END Line");
     }
   }
-}
 
-float getValue(String data, char separator) {
-  String value = "";
-  int separatorCount = 0;
-
-  for (int i = 0; i < data.length(); i++) {
-    if (data[i] == separator) {
-      separatorCount++;
-    } else if (separatorCount == 1) {
-      value += data[i];
-    }
-  }
-  return value.toFloat();
+  can_G = true;
 }
 
 void move_stepper(AccelStepper &stepper, long value) {

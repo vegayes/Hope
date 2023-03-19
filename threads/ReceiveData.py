@@ -21,7 +21,7 @@ class ReceiveData(QThread):
             if self.serial.readable():
                 try:
                     self.m = self.serial.readline()
-                    text = self.m[:len(self.m) - 1].decode()
+                    text = self.m[:len(self.m) - 1].decode('utf-8')
                     diving_point = None
 
                     if text.find('<') != -1:
