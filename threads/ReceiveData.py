@@ -42,7 +42,6 @@ class ReceiveData(QThread):
                 except UnicodeDecodeError:
                     print("인코딩 에러 발생 : ", self.m)
 
-
     def console_print(self, text):
         if len(text) != 0:
             text = text.strip("<c>")
@@ -67,5 +66,3 @@ class ReceiveData(QThread):
         # 처음에 1을 받아야함
         text = text.strip("<g>")
         self.can_G = True
-
-

@@ -31,7 +31,7 @@ class G_code_hope:
         fname = QFileDialog.getOpenFileName(self.main, 'Open file', './')
         print(type(fname), fname)
         self.arduino = self.main.arduino
-        self.arduino.send_data("p\n")
+        self.arduino.send_data("Stop\n")
 
         if fname[0]:
             f = open(fname[0], 'r', encoding='UTF8')
@@ -150,7 +150,7 @@ class G_code_hope:
     def Auto_stop(self):
         self.arduino = self.main.arduino
         self.progressThread.runPause()
-        self.arduino.send_data("p\n")
+        self.arduino.send_data("Stop\n")
         self.main.statusBar().showMessage("S T O P")
         print("중단 합니다.")
         self.progressThread.runPause()
