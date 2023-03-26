@@ -82,6 +82,13 @@ void AccelStepperControl::run() {
   _A_stepper.run();
 }
 
+void AccelStepperControl::runSpeed() {
+  _X_stepper.runSpeed();
+  _Y_stepper.runSpeed();
+  _Z_stepper.runSpeed();
+  _A_stepper.runSpeed();
+}
+
 void AccelStepperControl::setSpeed(char axis, double speed) {
 
   axis = tolower(axis);
@@ -125,6 +132,16 @@ void AccelStepperControl::allStop() {
   if (_A_stepper.distanceToGo() != 0) {
     _A_stepper.stop();
   }
+
+  _X_stepper.move(0);
+  _Y_stepper.move(0);
+  _Z_stepper.move(0);
+  _A_stepper.move(0);
+
+  _X_stepper.setSpeed(0);
+  _Y_stepper.setSpeed(0);
+  _Z_stepper.setSpeed(0);
+  _A_stepper.setSpeed(0);
 }
 
 void AccelStepperControl::home() {
@@ -142,11 +159,18 @@ void AccelStepperControl::home() {
   print_currentPos('a');
 }
 
-void AccelStepperControl::setPosition() {
-  _X_stepper.setCurrentPosition(0);
-  _Y_stepper.setCurrentPosition(0);
-  _Z_stepper.setCurrentPosition(0);
-  _A_stepper.setCurrentPosition(0);
+void AccelStepperControl::setPosition(char axis, long value) {
+  axis = tolower(axis);
+
+  if (axis == 'x') {
+    _X_stepper.setCurrentPosition(value);
+  } else if (axis == 'y') {
+    _Y_stepper.setCurrentPosition(value);
+  } else if (axis == 'z') {
+    _Z_stepper.setCurrentPosition(value);
+  } else if (axis == 'a') {
+    _A_stepper.setCurrentPosition(value);
+  }
 }
 
 void AccelStepperControl::print_ToGo(char axis) {
@@ -189,6 +213,10 @@ void AccelStepperControl::show_currentPos(char axis) {
 
 bool AccelStepperControl::isSteppersMove() {
   return (_X_stepper.distanceToGo() == 0 && _Y_stepper.distanceToGo() == 0 && _Z_stepper.distanceToGo() == 0 && _A_stepper.distanceToGo() == 0) ? false : true;
+}
+
+bool AccelStepperControl::isStepperStop() {
+  return (_X_stepper.speed() == 0 && _Y_stepper.speed() == 0 && _Z_stepper.speed() == 0 && _A_stepper.speed() == 0) ? true : false;
 }
 
 double AccelStepperControl::currentPos(char axis) {
@@ -253,7 +281,10 @@ void AccelStepperControl::auto_mode(String mode) {
   }
 
   if(mode == "Zero Setting") {
-    setPosition();
+    setPosition('x', 0);
+    setPosition('y', 0);
+    setPosition('z', 0);
+    setPosition('a', 0);
   }
 
   if(mode == "Stop") {

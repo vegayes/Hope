@@ -22,7 +22,7 @@
 #include "CalculateAccelStepper.h"
 
 #define HALFSTEP 8        //Half-step mode (8 step control signal sequence)
-#define BAUD_RATE 115200  // 보드레이트 230400 or 115200
+#define BAUD_RATE 230400  // 보드레이트 230400 or 115200
 
 #define X_STP 2   // X axis, step pin
 #define Y_STP 3   // Y
@@ -41,16 +41,21 @@
 float steps = 10;  // JOG이동 시, 고정값 (step * 5) 1step per 1mm distance **
 
 long StartTime = 0;
+long MovementTime = 0;
 
 bool isStopped = false;  // stop 인식
 
 bool can_G = false;  //G코드 인식 값
 
-// 초기 위치 설정
-int current_x = 0;
-int current_y = 0;
-int current_z = 0;
-int current_a = 0;
+double getG = 0;
+double getX = 0;
+double getY = 0;
+double getZ = 0;
+double getA = 0;
+double getF = 1000;
+double getM = 0;
+
+bool doGCode = false;
 
 
 // define motor
@@ -73,8 +78,8 @@ GCodeTranslator GCode = GCodeTranslator();
 void setup() {
   Serial.begin(BAUD_RATE);
   Serial.println("시리얼을 보냄....");
-  set_StepperSetting(X_Stepper, 1200, 550);   // 1200, 1250
-  set_StepperSetting(Y_Stepper, 2200, 1800);  // 2200 ,1800
+  set_StepperSetting(X_Stepper, 10000, 550);  // 1200, 1250
+  set_StepperSetting(Y_Stepper, 10000, 550);  // 2200 ,1800
   set_StepperSetting(Z_Stepper, 500, 500);    // 8000, 8000
   set_StepperSetting(A_Stepper, 500, 500);    // 500, 500
 
@@ -101,15 +106,35 @@ void loop() {
   /// Display 표시, 매개변수는 ms마다 Display 표시를 함.
   showDisplayPosition(50);
 
-  //예시,, current_x = update_x * 10;은 목표 값 vs X모터의 현재 위치 값을 비교
-  if (!Steppers.isSteppersMove()) {
-    if (can_G == true) {
-      Serial.println((String) "<g>");
-      can_G = false;
-    }
-  }
+  // //예시,, current_x = update_x * 10;은 목표 값 vs X모터의 현재 위치 값을 비교
+  // if (!Steppers.isSteppersMove()) {
+  //   if (can_G == true) {
+  //     Serial.println((String) "<g>");
+  //     can_G = false;
+  //   }
+  // }
 
-  Steppers.run();
+  if (doGCode) {
+    Steppers.runSpeed();
+    if (Steppers.currentPos('x') >= getX) {
+      Steppers.setSpeed('x', 0);
+    }
+    if (Steppers.currentPos('y') >= getY) {
+      Steppers.setSpeed('y', 0);
+    }
+
+    if (Steppers.isStepperStop()) {
+      Serial.println((String) "<g>");
+      doGCode = false;
+      set_StepperSetting(X_Stepper, 10000, 550);  // 1200, 1250
+      set_StepperSetting(Y_Stepper, 10000, 550);  // 2200 ,1800
+      set_StepperSetting(Z_Stepper, 500, 500);    // 8000, 8000
+      set_StepperSetting(A_Stepper, 500, 500);    // 500, 500
+    }
+
+  } else {
+    Steppers.run();
+  }
 }
 
 
@@ -167,7 +192,7 @@ void getDataFromPython() {
   Python으로 부터 값을 받아온후 실행하게 될 함수.
 */
 void mainFunction() {
-  if(GCode.isGCode()) {
+  if (GCode.isGCode()) {
     GCodeFunction();
   }
   Steppers.auto_mode(GCode.line);
@@ -180,82 +205,64 @@ void mainFunction() {
 /*
    G코드 인식
 */
+double time = 2;  // 도달하는 데 걸리는 시간
 void GCodeFunction() {
-  double G = GCode.get('G');
-  double X = GCode.get('X');
-  double Y = GCode.get('Y');
-  double Z = GCode.get('Z');
-  double A = GCode.get('A');
-  double F = GCode.get('F');
-  double M = GCode.get('M');
-  Serial.println((String) "<c> G : " + G + " X : " + X + " Y : " + Y + " Z : " + Z + " A : " + A + " F : " + F + " M : " + M);
-
-  double dx = X - Steppers.currentPos('X');
-  double dy = Y - Steppers.currentPos('Y');
-
-  Serial.println((String) "<c> dx: " + dx + " dy: " + dy);
-
   // CalculateAccelStepper calc = CalculateAccelStepper();
-  Steppers.setAccel('x', 10);
-  Steppers.setAccel('y', 50);
+  getG = GCode.get('G');
+  getX = GCode.get('X');
+  getY = GCode.get('Y');
+  getZ = GCode.get('Z');
+  getA = GCode.get('A');
+  getF = GCode.get('F');
+  getM = GCode.get('M');
+  Serial.println((String) "<c> G : " + getG + " X : " + getX + " Y : " + getY + " Z : " + getZ + " A : " + getA + " F : " + getF + " M : " + getM);
 
-  Steppers.moveTo('x', X);
-  Steppers.moveTo('y', Y);
+  double distribution = 0;
+  if (getX > getY) {                               // 100 > 50
+    double speed = getY / time;                    // 50 /10 = 5
+    distribution = getX / getY;                    // 100 / 50 = 2
+    Steppers.setSpeed('x', speed * distribution);  // 5 * 2 = 10
+    Steppers.setSpeed('y', speed);
+  } else {
+    float speed = getX / time;                     // 1000 / 20 = 50
+    distribution = getY / getX;                    // 20000 / 1000 = 20
+    Steppers.setSpeed('x', speed);                 // 100
+    Steppers.setSpeed('y', speed * distribution);  // 100
+  }
+
+  doGCode = true;
+
+  // 최대 속도 및 가속도
+  // float max_Speed = getF;         // mm/s
+  // float max_Acceleration = getF;  // mm/s^2
+
+  // // 이동 시간 계산
+  // double timeToReachMaxSpeed = max_Speed / max_Acceleration;                                            // 최대 속도에 도달하는 데 걸리는 시간
+  // double distanceToReachMaxSpeed = 0.5 * max_Acceleration * timeToReachMaxSpeed * timeToReachMaxSpeed;  // 최대 속도에 도달하기 위한 거리
+  // double totalTime = 2 * timeToReachMaxSpeed + (distance - 2 * distanceToReachMaxSpeed) / max_Speed;    // 이동에 걸리는 총 시간 원래
+
+  // double speedX = dx / totalTime;
+  // double speedY = dy / totalTime;
+  // double speedZ = dz / totalTime;
+
+  // // X, Y, Z 축의 이동 가속도 계산
+  // double accelerationX = (speedX / timeToReachMaxSpeed) * max_Acceleration;
+  // double accelerationY = (speedY / timeToReachMaxSpeed) * max_Acceleration;
+  // double accelerationZ = (speedZ / timeToReachMaxSpeed) * max_Acceleration;
+
+  // Steppers.setSpeed('x', speedX);
+  // Steppers.setSpeed('y', speedY);
+  // Steppers.setSpeed('z', speedZ);
+
+  // Steppers.setAccel('x', accelerationX);
+  // Steppers.setAccel('y', accelerationY);
+  // Steppers.setAccel('z', accelerationZ);
+
+  // Steppers.moveTo('x', getX);
+  // Steppers.moveTo('y', getY);
+  // Steppers.moveTo('z', getZ);
 
 
   // lines(getX, getY);  // Call the line() function with the new coordinates
   can_G = true;
-}
-
-
-
-
-
-
-
-
-
-float px = 0;  // Initialize px and py outside of the line() function
-float py = 0;
-/*
-   브레젠험
-*/
-void lines(float newx, float newy) {
-  long i;
-  long over = 0;
-
-  long dx = newx - px;
-  long dy = newy - py;
-  int dirx = dx > 0 ? 1 : -1;
-  int diry = dy > 0 ? 1 : -1;
-
-  dx = abs(dx);
-  dy = abs(dy);
-
-  if (dx > dy) {
-    over = dx / 2;
-    for (i = 0; i < dx; ++i) {
-      X_Stepper.runSpeed();
-      over += dy;
-      if (over >= dx) {
-        over -= dx;
-        Y_Stepper.runSpeed();
-      }
-      delay(1);  // Add a small delay to control the speed of the motors
-    }
-  } else {
-    over = dy / 2;
-    for (i = 0; i < dy; ++i) {
-      Y_Stepper.runSpeed();
-      over += dx;
-      if (over >= dy) {
-        over -= dy;
-        X_Stepper.runSpeed();
-      }
-      delay(1);  // Add a small delay to control the speed of the motors
-    }
-  }
-
-  px = newx;
-  py = newy;
 }

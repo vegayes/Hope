@@ -18,6 +18,7 @@ public:
   /// X, Y, Z, A축의 모터를 run을 호출합니다.
   void run();
 
+  void runSpeed();
 
   void setSpeed(char axis, double speed);
 
@@ -32,7 +33,7 @@ public:
   void home();
 
   /// X, Y, Z, A를 모두 현재 위치를 초기 위치로 설정합니다.
-  void setPosition();
+  void setPosition(char axis, long value);
 
   /// 해당 축의 위치와 가야하는 만큼을 출력합니다.
   void print_ToGo(char axis);
@@ -45,6 +46,9 @@ public:
 
   ///  모든 AccelStepper들이 움직이고 있는 중이면 true, (움직임의 기준은 run이 아니라, distanceToGo 기준.)
   bool isSteppersMove();
+
+  /// 모든 AccelStepper 들의 Speed가 0이면 true
+  bool isStepperStop();
 
   /// 해당 축의 현재 위치를 반환합니다.
   double currentPos(char axis);
