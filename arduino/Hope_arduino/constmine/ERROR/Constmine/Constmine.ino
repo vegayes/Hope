@@ -12,14 +12,14 @@
 /// <d>는 규정이 존재 :: "축" 이라는 단어가 들어가야 하며, "축" 앞에는 표시할 축을 대문자로 표시해야함, ":" 또한 존재해야하며, ":" 뒤에는 현재 위치(currentPostion) 이 존재해야함.
 /// Ex) <c>"Hello"               ->          Hello
 /// Ex) <d>X축 :80               ->          80
-/// Ex) <g>                      ->          
-
-#include <GCodeParser.h>
-
+/// Ex) <g>                      ->
 #include <ezButton.h>
 #include <AccelStepper.h>
 #include <SoftwareSerial.h>
+
 #include "AccelStepperControl.h"
+#include "GCodeTranslator.h"
+#include "CalculateAccelStepper.h"
 
 #define HALFSTEP 8        //Half-step mode (8 step control signal sequence)
 #define BAUD_RATE 115200  // 보드레이트 230400 or 115200
@@ -67,7 +67,7 @@ ezButton LSwitchX(limitX);
 ezButton LSwitchY(limitY);
 ezButton LSwitchZ(limitZ);
 
-GCodeParser GCode = GCodeParser();
+GCodeTranslator GCode = GCodeTranslator();
 
 
 void setup() {
@@ -102,17 +102,14 @@ void loop() {
   showDisplayPosition(50);
 
   //예시,, current_x = update_x * 10;은 목표 값 vs X모터의 현재 위치 값을 비교
-  if (X_Stepper.distanceToGo() == 0 && Y_Stepper.distanceToGo() == 0 && Z_Stepper.distanceToGo() == 0 && A_Stepper.distanceToGo() == 0) {
+  if (!Steppers.isSteppersMove()) {
     if (can_G == true) {
       Serial.println((String) "<g>");
       can_G = false;
     }
   }
 
-  X_Stepper.run();
-  Y_Stepper.run();
-  Z_Stepper.run();
-  A_Stepper.run();
+  Steppers.run();
 }
 
 
@@ -134,10 +131,7 @@ void set_StepperSetting(AccelStepper &stepper, int Speed, int accel) {
 
 void switchPressedCheck() {
   if (LSwitchX.isPressed() || LSwitchY.isPressed() || LSwitchZ.isPressed()) {
-    X_Stepper.stop();
-    Y_Stepper.stop();
-    Z_Stepper.stop();
-    A_Stepper.stop();
+    Steppers.allStop();
     Serial.println(F("The limit switchButton: TOUCHED"));
   }
 }
@@ -154,7 +148,7 @@ void showDisplayPosition(int microsecond) {
 
 
 /// =========================================================================================================================================================================
-///                                                                     Python 상호 작용 코드
+///                                                                     Python 상호 작용 코드 ( main )
 /// =========================================================================================================================================================================
 
 /*
@@ -173,24 +167,52 @@ void getDataFromPython() {
   Python으로 부터 값을 받아온후 실행하게 될 함수.
 */
 void mainFunction() {
-  String temp(GCode.line);
-  int index = temp.indexOf("<G>");
-  if (index >= 0) {
-    temp.replace("<G>", "");
-    strcpy(GCode.line, temp.c_str());
+  if(GCode.isGCode()) {
     GCodeFunction();
-    return;
   }
-  String line = GCode.line;
-  Serial.println(GCode.line);
-
-  Steppers.auto_mode(line);
+  Steppers.auto_mode(GCode.line);
 }
 
 
 /// =========================================================================================================================================================================
 ///                                                                     G Code 실행 관련 부분
 /// =========================================================================================================================================================================
+/*
+   G코드 인식
+*/
+void GCodeFunction() {
+  double G = GCode.get('G');
+  double X = GCode.get('X');
+  double Y = GCode.get('Y');
+  double Z = GCode.get('Z');
+  double A = GCode.get('A');
+  double F = GCode.get('F');
+  double M = GCode.get('M');
+  Serial.println((String) "<c> G : " + G + " X : " + X + " Y : " + Y + " Z : " + Z + " A : " + A + " F : " + F + " M : " + M);
+
+  double dx = X - Steppers.currentPos('X');
+  double dy = Y - Steppers.currentPos('Y');
+
+  Serial.println((String) "<c> dx: " + dx + " dy: " + dy);
+
+  // CalculateAccelStepper calc = CalculateAccelStepper();
+  Steppers.setAccel('x', 10);
+  Steppers.setAccel('y', 50);
+
+  Steppers.moveTo('x', X);
+  Steppers.moveTo('y', Y);
+
+
+  // lines(getX, getY);  // Call the line() function with the new coordinates
+  can_G = true;
+}
+
+
+
+
+
+
+
 
 
 float px = 0;  // Initialize px and py outside of the line() function
@@ -236,64 +258,4 @@ void lines(float newx, float newy) {
 
   px = newx;
   py = newy;
-}
-
-
-/*
-   G코드 인식
-*/
-void GCodeFunction() {
-  String line = GCode.line;
-  Serial.println(GCode.line);
-  if (GCode.HasWord('G')) {
-    if (GCode.GetWordValue('G') == 0 || GCode.GetWordValue('G') == 1) {
-      float getX = 0;
-      float getY = 0;
-      float getZ = 0;
-      float getA = 0;
-      float getF = 1000;
-
-      if (GCode.HasWord('X')) {
-        getX = GCode.GetWordValue('X');
-        getX = getX * 10;
-      }
-      if (GCode.HasWord('Y')) {
-        getY = GCode.GetWordValue('Y');
-        getY = getY * 10;
-      }
-      if (GCode.HasWord('Z')) {
-        getZ = GCode.GetWordValue('Z');
-        getZ = getZ * 10;
-      }
-      if (GCode.HasWord('A')) {
-        getA = GCode.GetWordValue('A');
-        getA = getA * 10;
-      }
-      if (GCode.HasWord('F')) {
-        getF = GCode.GetWordValue('F');
-      }
-
-      lines(getX, getY);  // Call the line() function with the new coordinates
-    }
-  }
-
-  if (GCode.HasWord('M')) {
-    if (GCode.GetWordValue('M') == 30) {  // 끝냄.
-      X_Stepper.stop();
-      Y_Stepper.stop();
-      Z_Stepper.stop();
-      A_Stepper.stop();
-
-
-      // speed를 원래 값으로 다시 재설정
-      X_Stepper.setSpeed(1200);
-      Y_Stepper.setSpeed(2200);
-      Z_Stepper.setSpeed(500);
-      A_Stepper.setSpeed(500);
-
-      Serial.println("G_code END Line");
-    }
-  }
-
-  can_G = true;
 }

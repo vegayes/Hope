@@ -9,7 +9,7 @@ AccelStepperControl::AccelStepperControl(AccelStepper& X_stepper, AccelStepper& 
 }
 
 
-bool AccelStepperControl::move(char axis, long pos) {
+bool AccelStepperControl::move(char axis, double pos) {
 
   // 소문자로 바꿈.
   axis = tolower(axis);
@@ -39,6 +39,76 @@ bool AccelStepperControl::move(char axis, long pos) {
         return true;
       }
       return false;
+  }
+}
+
+bool AccelStepperControl::moveTo(char axis, double pos) {
+
+  // 소문자로 바꿈.
+  axis = tolower(axis);
+
+  switch (axis) {
+    case 'x':
+      if (_X_stepper.distanceToGo() == 0) {
+        _X_stepper.moveTo(pos);
+        return true;
+      }
+      return false;
+    case 'y':
+      if (_Y_stepper.distanceToGo() == 0) {
+        _Y_stepper.moveTo(pos);
+        return true;
+      }
+      return false;
+    case 'z':
+      if (_Z_stepper.distanceToGo() == 0) {
+        _Z_stepper.moveTo(pos);
+        return true;
+      }
+      return false;
+    case 'a':
+      if (_A_stepper.distanceToGo() == 0) {
+        _A_stepper.moveTo(pos);
+        return true;
+      }
+      return false;
+  }
+}
+
+void AccelStepperControl::run() {
+  _X_stepper.run();
+  _Y_stepper.run();
+  _Z_stepper.run();
+  _A_stepper.run();
+}
+
+void AccelStepperControl::setSpeed(char axis, double speed) {
+
+  axis = tolower(axis);
+
+  if (axis == 'x') {
+    _X_stepper.setSpeed(speed);
+  } else if (axis == 'y') {
+    _Y_stepper.setSpeed(speed);
+  } else if (axis == 'z') {
+    _Z_stepper.setSpeed(speed);
+  } else if (axis == 'a') {
+    _A_stepper.setSpeed(speed);
+  }
+}
+
+void AccelStepperControl::setAccel(char axis, double accel) {
+
+  axis = tolower(axis);
+
+  if (axis == 'x') {
+    _X_stepper.setAcceleration(accel);
+  } else if (axis == 'y') {
+    _Y_stepper.setAcceleration(accel);
+  } else if (axis == 'z') {
+    _Z_stepper.setAcceleration(accel);
+  } else if (axis == 'a') {
+    _A_stepper.setAcceleration(accel);
   }
 }
 
@@ -107,38 +177,32 @@ void AccelStepperControl::print_currentPos(char axis) {
 
   axis = tolower(axis);
 
-  if (axis == 'x') {
-    long X_CurrentPos = _X_stepper.currentPosition();
-    Serial.println((String) "<c>" + axis + "축은 현재 " + X_CurrentPos + "에 있습니다.");
-  } else if (axis == 'y') {
-    long Y_CurrentPos = _Y_stepper.currentPosition();
-    Serial.println((String) "<c>" + axis + "축은 현재 " + Y_CurrentPos + "에 있습니다.");
-  } else if (axis == 'z') {
-    long Z_CurrentPos = _Z_stepper.currentPosition();
-    Serial.println((String) "<c>" + axis + "축은 현재 " + Z_CurrentPos + "에 있습니다.");
-  } else if (axis == 'a') {
-    long A_CurrentPos = _A_stepper.currentPosition();
-    Serial.println((String) "<c>" + axis + "축은 현재 " + A_CurrentPos + "에 있습니다.");
-  }
+  Serial.println((String) "<c>" + axis + "축은 현재 " + currentPos(axis) + "에 있습니다.");
 }
 
 void AccelStepperControl::show_currentPos(char axis) {
 
   axis = tolower(axis);
 
+  Serial.println((String) "<d>" + (char)toupper(axis) + "축 :" + currentPos(axis));
+}
+
+bool AccelStepperControl::isSteppersMove() {
+  return (_X_stepper.distanceToGo() == 0 && _Y_stepper.distanceToGo() == 0 && _Z_stepper.distanceToGo() == 0 && _A_stepper.distanceToGo() == 0) ? false : true;
+}
+
+double AccelStepperControl::currentPos(char axis) {
+  double currentPos = 0;
   if (axis == 'x') {
-    long X_CurrentPos = _X_stepper.currentPosition();
-    Serial.println((String) "<d>" + (char)toupper(axis) + "축 :" + X_CurrentPos);
+    currentPos = _X_stepper.currentPosition();
   } else if (axis == 'y') {
-    long Y_CurrentPos = _Y_stepper.currentPosition();
-    Serial.println((String) "<d>" + (char)toupper(axis) + "축 :" + Y_CurrentPos);
+    currentPos = _Y_stepper.currentPosition();
   } else if (axis == 'z') {
-    long Z_CurrentPos = _Z_stepper.currentPosition();
-    Serial.println((String) "<d>" + (char)toupper(axis) + "축 :" + Z_CurrentPos);
+    currentPos = _Z_stepper.currentPosition();
   } else if (axis == 'a') {
-    long A_CurrentPos = _A_stepper.currentPosition();
-    Serial.println((String) "<d>" + (char)toupper(axis) + "축 :" + A_CurrentPos);
+    currentPos = _A_stepper.currentPosition();
   }
+  return currentPos;
 }
 
 
