@@ -3,6 +3,7 @@ import sys
 
 from PyQt5 import QtWidgets
 
+import Hope2_UI
 import Hope_UI
 
 
@@ -21,6 +22,8 @@ class UI_Window(QtWidgets.QMainWindow, Hope_UI.Ui_HOPE):
 
         self.ui = Hope_UI.Ui_HOPE()
         self.ui.setupUi(self)
+
+        # self.ui2 = Hope2_UI.Ui_HOPE2()
 
         self.portClass = port_hope(self, self.ui)
         self.microsteppingClass = microstepping_hope(self, self.ui)

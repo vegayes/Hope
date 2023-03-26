@@ -1,8 +1,11 @@
 import re
 import time
 
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
 
+
+import Hope2_UI
 import Hope_UI
 import Hope_main
 from display import Hope_ProgressBar
@@ -24,7 +27,14 @@ class G_code_hope:
         self.ui.File_open_button.clicked.connect(self.open_button)
         self.ui.Auto_start_button.clicked.connect(self.Auto_start)
         self.ui.Auto_stop_button.clicked.connect(self.Auto_stop)
-        self.ui.Option_form_button.clicked.connect(self.ui.openHope2)
+        self.ui.Option_form_button.clicked.connect(self.openHope2)
+
+    def openHope2(self):
+        self.window2 = QtWidgets.QDialog()
+        self.ui2 = Hope2_UI.Ui_HOPE2()
+        self.ui2.setupUi(self.window2)
+        self.window2.show()
+        self.ui2.Option_Setting_Button.clicked.connect(self.option_setting_button)
 
     def open_button(self):
         # 파일을 열고나서 처음 값이 같다면 return
@@ -95,8 +105,18 @@ class G_code_hope:
                 num_lines = len(line)
                 print(num_lines)
 
-                self.ui.G_code_upload.setText(data)
+                self.text = data
+
+                self.ui.G_code_upload.setText(data)# 변형 코드들은 위에 써줘야 함.
                 self.ui.G_code_read.setText("")
+
+                # 원점 복귀 추가 코드들
+                self.ui.G_code_upload.append("-" * 25)  # 경계 값 확인하려고 넣어둠.
+                self.ui.G_code_upload.append("G04 P1500") #1.5초 기다림.
+                self.ui.G_code_upload.append("G01 X0 Y0 Z50 A90")  # X Y 원점 복귀 혹시 몰라서 A축이랑 Z축 그려지지 않게 올림. **
+                self.ui.G_code_upload.append("G04 P1500")  # 1.5초 기다림.
+                self.ui.G_code_upload.append("G01 Z0 A0")  # Z A 원점 복귀
+                self.ui.G_code_upload.append("M30")  # 끝내기 *=>18로 바뀔 수 있음
 
                 if self.progressThread.isRunning():
                     self.progressThread.runPause()
@@ -154,3 +174,60 @@ class G_code_hope:
         self.main.statusBar().showMessage("S T O P")
         print("중단 합니다.")
         self.progressThread.runPause()
+
+
+    def option_setting_button(self):
+        global data
+        # x_text = self.ui2.Position_X_Edit.toPlainText()
+        # y_text = self.ui2.Position_Y_Edit.toPlainText()
+        # height = self.ui2.Height_Edit.toPlainText()
+        # width = self.ui2.Width_Edit.toPlainText()
+
+        # text_Edit_list = [x_text, y_text, height, width]
+
+        if self.ui2.type1_radio_button.isChecked():
+            print("plan")
+            #  type1 일 때는 비활성화 하던가 이거 어려우면 message로 오류 났다가 표시하기.
+            self.window2.close()
+
+        elif self.ui2.type2_radio_button.isChecked():
+            print("45degree")
+            # angle = 45
+
+            x_text = self.ui2.Position_X_Edit.toPlainText()
+            print("X값 : " + x_text)
+
+            y_text = self.ui2.Position_Y_Edit.toPlainText()
+            print("Y값 :" + y_text)
+
+            height = self.ui2.Height_Edit.toPlainText()
+            print("height값 :" + height)
+
+            width = self.ui2.Width_Edit.toPlainText()
+            print("width값 :" + width)
+
+            # 수식 적용.
+
+            print("data값 "+ self.text)
+
+            self.window2.close()
+
+        elif self.ui2.type3_radio_button.isChecked():
+            print("90degree")
+            # 90
+            x_text = self.ui2.Position_X_Edit.toPlainText()
+            print("X값 : " + x_text)
+
+            y_text = self.ui2.Position_Y_Edit.toPlainText()
+            print("Y값 :" + y_text)
+
+            height = self.ui2.Height_Edit.toPlainText()
+            print("height값 :" + height)
+
+            width = self.ui2.Width_Edit.toPlainText()
+            print("width값 :" + width)
+
+            # 수식 이용.
+
+            self.window2.close()
+
