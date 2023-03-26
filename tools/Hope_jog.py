@@ -32,16 +32,15 @@ class jog_hope:
         self.arduino.send_data("Xdown\n")
         self.main.statusBar().showMessage("Jog_X -")
 
+    def jog_y_down(self):
+        self.arduino = self.main.arduino
+        self.arduino.send_data("Ydown\n")
+        self.main.statusBar().showMessage("Jog_Y -")
 
     def jog_y_up(self):
         self.arduino = self.main.arduino
         self.arduino.send_data("Yup\n")
         self.main.statusBar().showMessage("Jog_Y +")
-
-    def jog_y_down(self):
-        self.arduino = self.main.arduino
-        self.arduino.send_data("Ydown\n")
-        self.main.statusBar().showMessage("Jog_Y -")
 
     def jog_z_up(self):
         self.arduino = self.main.arduino

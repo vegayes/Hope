@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Users\vegay\Desktop\HOPE2\HOPE2.ui'
+# Form implementation generated from reading ui file 'C:\Users\vegay\Desktop\졸업작품\HOPE2\HOPE2.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_HOPE2(object):
     def setupUi(self, HOPE2):
         HOPE2.setObjectName("HOPE2")
-        HOPE2.resize(700, 420)
+        HOPE2.resize(730, 369)
         self.Type_Group = QtWidgets.QGroupBox(HOPE2)
         self.Type_Group.setGeometry(QtCore.QRect(40, 70, 191, 241))
         self.Type_Group.setObjectName("Type_Group")
@@ -46,10 +46,10 @@ class Ui_HOPE2(object):
         self.Opion_Group.setGeometry(QtCore.QRect(270, 70, 391, 241))
         self.Opion_Group.setObjectName("Opion_Group")
         self.Height_Edit = QtWidgets.QTextEdit(self.Opion_Group)
-        self.Height_Edit.setGeometry(QtCore.QRect(100, 30, 180, 41))
+        self.Height_Edit.setGeometry(QtCore.QRect(100, 130, 180, 41))
         self.Height_Edit.setObjectName("Height_Edit")
         self.Height_label = QtWidgets.QLabel(self.Opion_Group)
-        self.Height_label.setGeometry(QtCore.QRect(20, 30, 71, 41))
+        self.Height_label.setGeometry(QtCore.QRect(20, 130, 71, 41))
         font = QtGui.QFont()
         font.setFamily("Agency FB")
         font.setPointSize(18)
@@ -62,6 +62,43 @@ class Ui_HOPE2(object):
         font.setPointSize(16)
         self.Option_Setting_Button.setFont(font)
         self.Option_Setting_Button.setObjectName("Option_Setting_Button")
+        self.Width_Edit = QtWidgets.QTextEdit(self.Opion_Group)
+        self.Width_Edit.setGeometry(QtCore.QRect(100, 180, 180, 41))
+        self.Width_Edit.setObjectName("Width_Edit")
+        self.Width_label = QtWidgets.QLabel(self.Opion_Group)
+        self.Width_label.setGeometry(QtCore.QRect(20, 180, 71, 41))
+        font = QtGui.QFont()
+        font.setFamily("Agency FB")
+        font.setPointSize(18)
+        self.Width_label.setFont(font)
+        self.Width_label.setObjectName("Width_label")
+        self.Position_Y_Edit = QtWidgets.QTextEdit(self.Opion_Group)
+        self.Position_Y_Edit.setGeometry(QtCore.QRect(180, 75, 101, 41))
+        self.Position_Y_Edit.setObjectName("Position_Y_Edit")
+        self.Option_Structure_Position_label = QtWidgets.QLabel(self.Opion_Group)
+        self.Option_Structure_Position_label.setGeometry(QtCore.QRect(80, 20, 161, 41))
+        font = QtGui.QFont()
+        font.setFamily("Agency FB")
+        font.setPointSize(16)
+        self.Option_Structure_Position_label.setFont(font)
+        self.Option_Structure_Position_label.setObjectName("Option_Structure_Position_label")
+        self.Position_X_Edit = QtWidgets.QTextEdit(self.Opion_Group)
+        self.Position_X_Edit.setGeometry(QtCore.QRect(40, 75, 101, 41))
+        self.Position_X_Edit.setObjectName("Position_X_Edit")
+        self.Option_X_lable = QtWidgets.QLabel(self.Opion_Group)
+        self.Option_X_lable.setGeometry(QtCore.QRect(10, 70, 31, 41))
+        font = QtGui.QFont()
+        font.setFamily("Agency FB")
+        font.setPointSize(18)
+        self.Option_X_lable.setFont(font)
+        self.Option_X_lable.setObjectName("Option_X_lable")
+        self.Option_Y_lable = QtWidgets.QLabel(self.Opion_Group)
+        self.Option_Y_lable.setGeometry(QtCore.QRect(150, 70, 31, 41))
+        font = QtGui.QFont()
+        font.setFamily("Agency FB")
+        font.setPointSize(18)
+        self.Option_Y_lable.setFont(font)
+        self.Option_Y_lable.setObjectName("Option_Y_lable")
 
         self.retranslateUi(HOPE2)
         QtCore.QMetaObject.connectSlotsByName(HOPE2)
@@ -76,6 +113,11 @@ class Ui_HOPE2(object):
         self.Opion_Group.setTitle(_translate("HOPE2", "Option"))
         self.Height_label.setText(_translate("HOPE2", "Height :"))
         self.Option_Setting_Button.setText(_translate("HOPE2", "Setting"))
+        self.Width_label.setText(_translate("HOPE2", "Width  :"))
+        self.Option_Structure_Position_label.setText(_translate("HOPE2", "Structure_Position"))
+        self.Option_X_lable.setText(_translate("HOPE2", "X :"))
+        self.Option_Y_lable.setText(_translate("HOPE2", "Y :"))
+
 
 if __name__ == "__main__":
     import sys
