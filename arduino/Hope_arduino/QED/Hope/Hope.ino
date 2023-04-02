@@ -20,8 +20,9 @@
 #include "AccelStepperControl.h"
 #include "GCodeTranslator.h"
 #include "CalculateAccelStepper.h"
+#include "Drawing.h"
 
-#define HALFSTEP 8        //Half-step mode (8 step control signal sequence)
+#define THALFSTEP 8       //Half-step mode (8 step control signal sequence)
 #define BAUD_RATE 115200  // 보드레이트 230400 or 115200
 
 #define X_STP 2   // X axis, step pin
@@ -47,15 +48,26 @@ double getZ;
 double getA;
 double getF = 1000;
 double getM;
+double getP;
 
 bool doGCode = false;
 
+double maxMove;                 // x가 500이므로
+double xr, yr, zr;              // 처음 실행전 x y z 의 위치
+double xp, yp, zp;              // 비율
+double speedX, speedY, speedZ;  //우리 모터는 1초에 400 이 한바퀴 이므로 2초 간다 생각하고 maxMove / 2 = 250;
+double i = 0;
+bool xstop = false;
+bool ystop = false;
+bool zstop = false;
+int xdir, ydir, zdir;
+
 // define motor
-AccelStepper Test_Stepper(HALFSTEP, 8, 10, 9, 11);           // 28motor(8, IN1, IN3, IN2, In4)
-AccelStepper X_Stepper(AccelStepper::DRIVER, X_STP, X_DIR);  // X motor
-AccelStepper Y_Stepper(AccelStepper::DRIVER, Y_STP, Y_DIR);  // Y motor
-AccelStepper Z_Stepper(AccelStepper::DRIVER, Z_STP, Z_DIR);  // Z motor
-AccelStepper A_Stepper(AccelStepper::DRIVER, A_STP, A_DIR);  // A motor
+AccelStepper Test_Stepper(THALFSTEP, 8, 10, 9, 11);             // 28motor(8, IN1, IN3, IN2, In4)
+AccelStepper X_Stepper(AccelStepper::FULL2WIRE, X_STP, X_DIR);  // X motor
+AccelStepper Y_Stepper(AccelStepper::FULL2WIRE, Y_STP, Y_DIR);  // Y motor
+AccelStepper Z_Stepper(AccelStepper::FULL2WIRE, Z_STP, Z_DIR);  // Z motor
+AccelStepper A_Stepper(AccelStepper::FULL2WIRE, A_STP, A_DIR);  // A motor
 
 AccelStepperControl Steppers(X_Stepper, Y_Stepper, Z_Stepper, A_Stepper);
 
@@ -65,15 +77,15 @@ ezButton LSwitchY(limitY);
 ezButton LSwitchZ(limitZ);
 
 GCodeTranslator GCode = GCodeTranslator();
-
+Drawing draw = Drawing();
 
 void setup() {
   Serial.begin(BAUD_RATE);
   Serial.println("시리얼을 보냄....");
   set_StepperSetting(X_Stepper, 10000, 550);  // 1200, 1250
   set_StepperSetting(Y_Stepper, 10000, 550);  // 2200 ,1800
-  set_StepperSetting(Z_Stepper, 10000, 550);    // 8000, 8000
-  set_StepperSetting(A_Stepper, 10000, 550);    // 500, 500
+  set_StepperSetting(Z_Stepper, 10000, 550);  // 8000, 8000
+  set_StepperSetting(A_Stepper, 10000, 550);  // 500, 500
 
   LSwitchX.setDebounceTime(50);
   LSwitchY.setDebounceTime(50);
@@ -98,29 +110,73 @@ void loop() {
   /// Display 표시, 매개변수는 ms마다 Display 표시를 함.
   showDisplayPosition(50);
 
-  if (doGCode) {
-    Steppers.runSpeed();
-    if (Steppers.currentPos('x') == getX) {
-      Steppers.setSpeed('x', 0);
-    }
-    if (Steppers.currentPos('y') == getY) {
-      Steppers.setSpeed('y', 0);
-    }
-    if (Steppers.currentPos('z') == getZ) {
-      Steppers.setSpeed('z', 0);
-    }
+  // maxMove = 500;                  // x가 500이므로
+  // xr = -1000, yr = -5000, zr = 300;  // 처음 실행전 x y z 의 위치
+  // xp = 1/5, yp = 1, zp = 3/5;         // 비율
+  // i = 0;
 
-    if (Steppers.isStepperStop()) {
-      Serial.println((String) "<g>");
-      doGCode = false;
-      set_StepperSetting(X_Stepper, 10000, 550);  // 1200, 1250
-      set_StepperSetting(Y_Stepper, 10000, 550);  // 2200 ,1800
-      set_StepperSetting(Z_Stepper, 10000, 550);    // 8000, 8000
-      set_StepperSetting(A_Stepper, 10000, 550);    // 500, 500
-    }
-
-  } else {
+  if (Steppers.doGCode == false) {
     Steppers.run();
+  }
+  else {
+    if (xdir == 1) {
+      if (xp * i + xr > Steppers.currentPos('x')) {
+        Steppers.runSpeed('x');
+      } else {
+        xstop = true;
+      }
+    } else if(xdir == -1) {
+      if ((xp * i) * xdir + xr < Steppers.currentPos('x')) {
+        Steppers.runSpeed('x');
+      } else {
+        xstop = true;
+      }
+    } 
+    if (ydir == 1) {
+      if (yp * i + yr > Steppers.currentPos('y')) {
+        Steppers.runSpeed('y');
+      } else {
+        ystop = true;
+      }
+    } else if(ydir == -1) {
+      if ((yp * i) * ydir + yr < Steppers.currentPos('y')) {
+        Steppers.runSpeed('y');
+      } else {
+        ystop = true;
+      }
+    } 
+    if (zdir == 1) {
+      if (zp * i + zr > Steppers.currentPos('z')) {
+        Steppers.runSpeed('z');
+      } else {
+        zstop = true;
+      }
+    } else if(zdir == -1) {
+      if ((zp * i) * zdir + zr  < Steppers.currentPos('z')) {
+        Steppers.runSpeed('z');
+      } else {
+        zstop = true;
+      }
+    } 
+    // Serial.println((String) "<c> i : " + i);
+    // Serial.println((String) "<c> xp : " + xp + " xPos : " + Steppers.currentPos('x') + " xSpeed" + Steppers.getSpeed('x'));
+    // Serial.println((String) "<c> yp : " + yp + " yPos : " + Steppers.currentPos('y') + " ySpeed" + Steppers.getSpeed('y'));
+    // Serial.println((String) "<c> zp : " + zp + " zPos : " + Steppers.currentPos('z') + " zSpeed" + Steppers.getSpeed('z'));
+    if (xstop && ystop && zstop) {
+      if (i < maxMove) {
+        i++;
+        xstop = false;
+        ystop = false;
+        zstop = false;
+      } else {
+        i = 0;
+        Steppers.doGCode = false;
+        Steppers.setSpeed('x', 0);
+        Steppers.setSpeed('y', 0);
+        Steppers.setSpeed('z', 0);
+        Serial.println((String) "<g>");
+      }
+    }
   }
 }
 
@@ -193,7 +249,7 @@ void mainFunction() {
 /*
    G코드 인식
 */
-double time = 2;  // 도달하는 데 걸리는 시간
+double time = 3;  // 도달하는 데 걸리는 시간
 void GCodeFunction() {
   // CalculateAccelStepper calc = CalculateAccelStepper();
   getG = GCode.get('G').equals("") ? 0 : GCode.get('G').toDouble();
@@ -203,6 +259,7 @@ void GCodeFunction() {
   getA = GCode.get('A').equals("") ? Steppers.currentPos('a') : GCode.get('A').toDouble();
   getF = GCode.get('F').equals("") ? getF : GCode.get('F').toDouble();
   getM = GCode.get('M').equals("") ? 0 : GCode.get('M').toDouble();
+  getP = GCode.get('P').equals("") ? 0 : GCode.get('P').toDouble();
 
   Serial.println(GCode.line);
   Serial.println((String) "<c> G : " + getG + " X : " + getX + " Y : " + getY + " Z : " + getZ + " A : " + getA + " F : " + getF + " M : " + getM);
@@ -210,80 +267,25 @@ void GCodeFunction() {
   double dx = getX - Steppers.currentPos('x');
   double dy = getY - Steppers.currentPos('y');
   double dz = getZ - Steppers.currentPos('z');
+  Serial.println((String) "<c> dx : " + dx + " dy : " + dy + " dz : " + dz);
 
-  double speedX = 0, speedY = 0, speedZ = 0;
-
+  maxMove = max(abs(dx), max(abs(dy), abs(dz)));
+  xr = Steppers.currentPos('x');
+  yr = Steppers.currentPos('y');
+  zr = Steppers.currentPos('z');
+  xdir = dx >= 0 ? 1 : -1;
+  ydir = dy >= 0 ? 1 : -1;
+  zdir = dz >= 0 ? 1 : -1;
   speedX = dx / time;
   speedY = dy / time;
   speedZ = dz / time;
-
+  xp = abs(dx) / maxMove;
+  yp = abs(dy) / maxMove;
+  zp = abs(dz) / maxMove;
   Steppers.setSpeed('x', speedX);
   Steppers.setSpeed('y', speedY);
   Steppers.setSpeed('z', speedZ);
 
-  // (100 , 50, 0)
 
-  // if(dx == 0 && dy == 0 dz == 0) {
-  //   speedX = dx / time;
-  //   speedY = dy / time;
-  //   speedZ = dz / time;
-  // } else if(dx == 0 && dy == 0) {
-  //   Steppers.setSpeed('x', speedX);
-  //   Steppers.setSpeed('y', speedY);
-  //   Steppers.setSpeed('z', speedZ);
-  // } else if(dy == 0 && dz == 0) {
-  //   Steppers.setSpeed('x', speedX);
-  //   Steppers.setSpeed('y', speedY);
-  //   Steppers.setSpeed('z', speedZ);
-  // } else if(dz == 0 && dx == 0) {
-  //   Steppers.setSpeed('x', speedX);
-  //   Steppers.setSpeed('y', speedY);
-  //   Steppers.setSpeed('z', speedZ);
-  // } else if(dx == 0) { // 0, 50, 100
-  //   double min_d = min(abs(dy), abs(dz)); 
-  //   double max_d = max(abs(dy), abs(dz)); 
-  //   double distribution = max_d / min_d;
-  //   Steppers.setSpeed('x', speedX);
-  //   Steppers.setSpeed('y', speedY);
-  //   Steppers.setSpeed('z', speedZ);
-  // } 
-
-
-  // Serial.println((String) "<c> dx : " + dx + " dy : " + dy + " speed : " + speed + " distribution : " + distribution);
-  
-
-  doGCode = true;
-
-  // 최대 속도 및 가속도
-  // float max_Speed = getF;         // mm/s
-  // float max_Acceleration = getF;  // mm/s^2
-
-  // // 이동 시간 계산
-  // double timeToReachMaxSpeed = max_Speed / max_Acceleration;                                            // 최대 속도에 도달하는 데 걸리는 시간
-  // double distanceToReachMaxSpeed = 0.5 * max_Acceleration * timeToReachMaxSpeed * timeToReachMaxSpeed;  // 최대 속도에 도달하기 위한 거리
-  // double totalTime = 2 * timeToReachMaxSpeed + (distance - 2 * distanceToReachMaxSpeed) / max_Speed;    // 이동에 걸리는 총 시간 원래
-
-  // double speedX = dx / totalTime;
-  // double speedY = dy / totalTime;
-  // double speedZ = dz / totalTime;
-
-  // // X, Y, Z 축의 이동 가속도 계산
-  // double accelerationX = (speedX / timeToReachMaxSpeed) * max_Acceleration;
-  // double accelerationY = (speedY / timeToReachMaxSpeed) * max_Acceleration;
-  // double accelerationZ = (speedZ / timeToReachMaxSpeed) * max_Acceleration;
-
-  // Steppers.setSpeed('x', speedX);
-  // Steppers.setSpeed('y', speedY);
-  // Steppers.setSpeed('z', speedZ);
-
-  // Steppers.setAccel('x', accelerationX);
-  // Steppers.setAccel('y', accelerationY);
-  // Steppers.setAccel('z', accelerationZ);
-
-  // Steppers.moveTo('x', getX);
-  // Steppers.moveTo('y', getY);
-  // Steppers.moveTo('z', getZ);
-
-
-  // lines(getX, getY);  // Call the line() function with the new coordinates
+  Steppers.doGCode = true;
 }

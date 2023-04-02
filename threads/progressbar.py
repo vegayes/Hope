@@ -1,6 +1,8 @@
 import time
 
 from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtGui import QTextCharFormat, QColor, QTextCursor
+
 import Hope_main
 import Hope_UI
 
@@ -21,13 +23,14 @@ class ProGressBar_Thread(QThread):
         self.receiveDate = self.main.arduino.getReceiveDateThread()
         for i, Gline in enumerate(self.lines):
             while not self.receiveDate.can_G:
-                time.sleep(0.3)
+                time.sleep(0.1)
                 if self.stop:
                     break
             while not self.running:
                 time.sleep(0.1)
                 if self.stop:
                     break
+
             line = Gline
             Gline = "<G>" + Gline + ";\n"
             self.main.arduino.send_data(Gline)

@@ -157,6 +157,7 @@ class G_code_hope:
     def Auto_start(self):  # Auto Start 버튼을 누르면 텍스트 값이 이동을 함.
         self.main.statusBar().showMessage("AUTO START")
         self.arduino = self.main.arduino
+        self.arduino.send_data("Start\n")
         text = self.ui.G_code_upload.toPlainText()
         lines = text.splitlines()
 
