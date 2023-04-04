@@ -1,9 +1,9 @@
 import re
 import time
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, Qt
+from PyQt5.QtGui import QColor, QTextCharFormat, QTextCursor, QTextBlockFormat
 from PyQt5.QtWidgets import *
-
 
 import Hope2_UI
 import Hope_UI
@@ -18,11 +18,14 @@ class G_code_hope:
         self.main = main
         self.ui = ui
         self.currentFile = None
+        self.previous_color = None
 
         self.pbar = Hope_ProgressBar.ProgressBar_Hope(main, ui)
         self.progressThread = progressbar.ProGressBar_Thread(self.main, self.ui)
         self.progressThread.pbar.connect(self.pbar.setValue)
         self.progressThread.read.connect(self.ui.G_code_read.setText)
+        self.progressThread.change.connect(self.change_text)
+        self.progressThread.add.connect(self.add_text)
 
         self.ui.File_open_button.clicked.connect(self.open_button)
         self.ui.Auto_start_button.clicked.connect(self.Auto_start)
@@ -35,6 +38,18 @@ class G_code_hope:
         self.ui2.setupUi(self.window2)
         self.window2.show()
         self.ui2.Option_Setting_Button.clicked.connect(self.option_setting_button)
+
+    def change_text(self, line):
+        # 텍스트를 추가하고 서식을 변경합니다.
+        self.ui.G_code_read.undo()
+        self.ui.G_code_read.moveCursor(QTextCursor.End)
+        self.ui.G_code_read.setTextColor(QColor("green"))
+        self.ui.G_code_read.append(line)
+
+    def add_text(self, line):
+        self.ui.G_code_read.setTextColor(QColor("red"))
+        self.ui.G_code_read.append(line)
+
 
     def open_button(self):
         # 파일을 열고나서 처음 값이 같다면 return
@@ -107,12 +122,12 @@ class G_code_hope:
 
                 self.text = data
 
-                self.ui.G_code_upload.setText(data)# 변형 코드들은 위에 써줘야 함.
+                self.ui.G_code_upload.setText(data)  # 변형 코드들은 위에 써줘야 함.
                 self.ui.G_code_read.setText("")
 
                 # 원점 복귀 추가 코드들
                 self.ui.G_code_upload.append("-" * 25)  # 경계 값 확인하려고 넣어둠.
-                self.ui.G_code_upload.append("G04 P1500") #1.5초 기다림.
+                self.ui.G_code_upload.append("G04 P1500")  # 1.5초 기다림.
                 self.ui.G_code_upload.append("G01 X0 Y0 Z50 A90")  # X Y 원점 복귀 혹시 몰라서 A축이랑 Z축 그려지지 않게 올림. **
                 self.ui.G_code_upload.append("G04 P1500")  # 1.5초 기다림.
                 self.ui.G_code_upload.append("G01 Z0 A0")  # Z A 원점 복귀
@@ -176,7 +191,6 @@ class G_code_hope:
         print("중단 합니다.")
         self.progressThread.runPause()
 
-
     def option_setting_button(self):
         global data
         # x_text = self.ui2.Position_X_Edit.toPlainText()
@@ -209,7 +223,7 @@ class G_code_hope:
 
             # 수식 적용.
 
-            print("data값 "+ self.text)
+            print("data값 " + self.text)
 
             self.window2.close()
 
@@ -231,4 +245,3 @@ class G_code_hope:
             # 수식 이용.
 
             self.window2.close()
-

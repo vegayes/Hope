@@ -10,9 +10,12 @@ import Hope_UI
 class ProGressBar_Thread(QThread):
     pbar = pyqtSignal(int)
     read = pyqtSignal(str)
+    change = pyqtSignal(str)
+    add = pyqtSignal(str)
 
     def __init__(self, parent: Hope_main.UI_Window, ui: Hope_UI.Ui_HOPE):
         super().__init__(parent)
+        self.line = None
         self.main = parent
         self.ui = ui
         self.running = True
@@ -31,16 +34,21 @@ class ProGressBar_Thread(QThread):
                 if self.stop:
                     break
 
-            line = Gline
+            if i > 0:
+                self.change.emit(self.line)
+            self.line = Gline
             Gline = "<G>" + Gline + ";\n"
             self.main.arduino.send_data(Gline)
             self.pbar.emit((int(((i + 1) / len(self.lines)) * 100)))
             # self.pbar.setValue(int(((i + 1) / len(self.lines)) * 100))
-            self.ui.G_code_read.append(line)
+            self.add.emit(self.line)
+
             self.receiveDate.can_G = False
 
             if self.stop:
                 break
+
+        self.change.emit(self.line)
 
     # 필수 호출 함수
     def setText(self, lines: list):

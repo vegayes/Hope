@@ -301,6 +301,7 @@ class Ui_HOPE(object):
         self.G_code_read = QtWidgets.QTextEdit(HOPE)
         self.G_code_read.setGeometry(QtCore.QRect(1070, 170, 361, 600))
         self.G_code_read.setObjectName("G_code_read")
+        self.G_code_read.setReadOnly(True)
         # self.G_code_read.setEnabled(False)
         self.G_code_progressBar = QtWidgets.QProgressBar(HOPE)
         self.G_code_progressBar.setGeometry(QtCore.QRect(670, 780, 760, 33))
