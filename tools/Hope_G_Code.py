@@ -244,4 +244,21 @@ class G_code_hope:
 
             # 수식 이용.
 
+            #1) 벽면 위치 값의 -30mm 저장 이 부분부터 A 45도 움직임. // 예로들어 해당 y로 가는 위치 값 전에 A는 45도를 유지를 그 줄에 추가해줌!( 같이 움직어야 그림이 그려짐. )
+            a_move_start = y_text - 30
+            print(a_move_start)
+
+            #2) 벽면의 높이 값의 - 15mm저장 이 부분부까지  A가 점점 90도로 움직임
+            a_move_end = height - 15
+            print(a_move_end)
+
+            #3) height와 width 사이에 있는 값은 다 변경하기. 예로들어서 해당 위치가 x: 30 (이거 필요 없을 듯) / y: 70 / width : 50 / height : 70이면
+            # a_move_height =
+
+            # 벽면에만 바로 그림 그리는 경우
+            # 1)
+
+
+
+
             self.window2.close()

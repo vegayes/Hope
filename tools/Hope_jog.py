@@ -12,8 +12,8 @@ class jog_hope:
 
         self.ui.jog_x_up_button.clicked.connect(self.jog_x_up)
         self.ui.jog_x_down_button.clicked.connect(self.jog_x_down)
-        self.ui.jog_y_left_button.clicked.connect(self.jog_y_up)
-        self.ui.jog_y_right_button.clicked.connect(self.jog_y_down)
+        self.ui.jog_y_left_button.clicked.connect(self.jog_y_down)
+        self.ui.jog_y_right_button.clicked.connect(self.jog_y_up)
         self.ui.jog_z_up_button.clicked.connect(self.jog_z_up)
         self.ui.jog_z_down_button.clicked.connect(self.jog_z_down)
         self.ui.jog_a_up_button.clicked.connect(self.jog_a_up)

@@ -7,6 +7,8 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QLCDNumber
+
 from Hope2_UI import Ui_HOPE2
 
 class Ui_HOPE(object):
@@ -51,7 +53,7 @@ class Ui_HOPE(object):
                                        "border-radius: 5px")
         self.Quit_button.setObjectName("Quit_button")
         self.JOG_Group = QtWidgets.QGroupBox(HOPE)
-        self.JOG_Group.setGeometry(QtCore.QRect(40, 150, 380, 235))
+        self.JOG_Group.setGeometry(QtCore.QRect(40, 150, 611, 341))
         self.JOG_Group.setObjectName("JOG_Group")
         self.JOG_Group.setEnabled(False)
         self.jog_y_right_button = QtWidgets.QPushButton(self.JOG_Group)
@@ -247,12 +249,12 @@ class Ui_HOPE(object):
         self.connect_button.setGeometry(QtCore.QRect(420, 110, 101, 28))
         self.connect_button.setObjectName("connect_button")
         self.Auto_Group = QtWidgets.QGroupBox(HOPE)
-        self.Auto_Group.setGeometry(QtCore.QRect(40, 390, 380, 260))
+        self.Auto_Group.setGeometry(QtCore.QRect(40, 490, 611, 311))
         self.Auto_Group.setObjectName("Auto_Group")
         self.Auto_Group.setEnabled(False)
         self.File_open_button = QtWidgets.QPushButton(self.Auto_Group)
         self.File_open_button.setEnabled(True)
-        self.File_open_button.setGeometry(QtCore.QRect(20, 30, 151, 91))
+        self.File_open_button.setGeometry(QtCore.QRect(20, 40, 160, 250))
         font = QtGui.QFont()
         font.setFamily("Agency FB")
         font.setPointSize(14)
@@ -263,7 +265,7 @@ class Ui_HOPE(object):
         self.File_open_button.setObjectName("File_open_button")
         self.Auto_start_button = QtWidgets.QPushButton(self.Auto_Group)
         self.Auto_start_button.setEnabled(True)
-        self.Auto_start_button.setGeometry(QtCore.QRect(200, 30, 151, 41))
+        self.Auto_start_button.setGeometry(QtCore.QRect(380, 40, 200, 120))
         font = QtGui.QFont()
         font.setFamily("Agency FB")
         font.setPointSize(11)
@@ -274,7 +276,7 @@ class Ui_HOPE(object):
         self.Auto_start_button.setObjectName("Auto_start_button")
         self.Auto_stop_button = QtWidgets.QPushButton(self.Auto_Group)
         self.Auto_stop_button.setEnabled(True)
-        self.Auto_stop_button.setGeometry(QtCore.QRect(200, 80, 151, 41))
+        self.Auto_stop_button.setGeometry(QtCore.QRect(380, 170, 200, 120))
         font = QtGui.QFont()
         font.setFamily("Agency FB")
         font.setPointSize(11)
@@ -285,21 +287,21 @@ class Ui_HOPE(object):
         self.Auto_stop_button.setObjectName("Auto_stop_button")
         self.Option_form_button = QtWidgets.QPushButton(self.Auto_Group)
         self.Option_form_button.setEnabled(True)
-        self.Option_form_button.setGeometry(QtCore.QRect(40, 150, 290, 90))
+        self.Option_form_button.setGeometry(QtCore.QRect(200, 40, 160, 250))
         font = QtGui.QFont()
         font.setFamily("Agency FB")
-        font.setPointSize(18)
+        font.setPointSize(12)
         font.setBold(True)
         font.setWeight(75)
         self.Option_form_button.setFont(font)
         self.Option_form_button.setCheckable(False)
         self.Option_form_button.setObjectName("Option_form_button")
         self.G_code_upload = QtWidgets.QTextEdit(HOPE)
-        self.G_code_upload.setGeometry(QtCore.QRect(670, 170, 361, 600))
+        self.G_code_upload.setGeometry(QtCore.QRect(670, 160, 361, 600))
         self.G_code_upload.setObjectName("G_code_upload")
         # self.G_code_upload.setEnabled(False)
         self.G_code_read = QtWidgets.QTextEdit(HOPE)
-        self.G_code_read.setGeometry(QtCore.QRect(1070, 170, 361, 600))
+        self.G_code_read.setGeometry(QtCore.QRect(1070, 160, 361, 600))
         self.G_code_read.setObjectName("G_code_read")
         self.G_code_read.setReadOnly(True)
         # self.G_code_read.setEnabled(False)
@@ -307,6 +309,19 @@ class Ui_HOPE(object):
         self.G_code_progressBar.setGeometry(QtCore.QRect(670, 780, 760, 33))
         self.G_code_progressBar.setProperty("value", 0)
         self.G_code_progressBar.setObjectName("G_code_progressBar")
+
+        # 스탑워치
+        self.Timer_number = QtWidgets.QLCDNumber(HOPE)
+        self.Timer_number.setGeometry(QtCore.QRect(1000, 70, 251, 51))
+        self.Timer_number.setMouseTracking(False)
+        self.Timer_number.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.Timer_number.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.Timer_number.setDigitCount(9)
+        self.Timer_number.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
+        self.Timer_number.setProperty("value", 0.0)
+        self.Timer_number.setObjectName("Timer_number")
+        self.Timer_label = QtWidgets.QLabel(HOPE)
+        self.Timer_label.setGeometry(QtCore.QRect(1110, 30, 61, 31))
 
         self.retranslateUi(HOPE)
         QtCore.QMetaObject.connectSlotsByName(HOPE)
@@ -349,6 +364,7 @@ class Ui_HOPE(object):
         self.Auto_start_button.setText(_translate("HOPE", "Auto Start"))
         self.Auto_stop_button.setText(_translate("HOPE", "Auto Stop"))
         self.Option_form_button.setText(_translate("HOPE", "G_code_transfer_option"))
+        self.Timer_label.setText(_translate("HOPE", "Timer"))
 
 
 
