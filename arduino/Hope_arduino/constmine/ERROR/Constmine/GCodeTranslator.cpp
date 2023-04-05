@@ -3,7 +3,8 @@
 #include <GCodeParser.h>
 #include <WString.h>
 
-GCodeTranslator::GCodeTranslator() : GCodeParser(){
+GCodeTranslator::GCodeTranslator()
+  : GCodeParser() {
 }
 
 bool GCodeTranslator::isGCode() {
@@ -17,18 +18,18 @@ bool GCodeTranslator::isGCode() {
   return false;
 }
 
-double GCodeTranslator::get(char c) {
+String GCodeTranslator::get(char c) {
   if (HasWord(c)) {
-        double value = GetWordValue(c);
-        if(c == 'X' || c == 'Y' || c == 'Z' || c == 'A') {
-          return value * motion_compensation;
-        } else {
-          return value;
-        }
+    double value = GetWordValue(c);
+    if (c == 'X' || c == 'Y' || c == 'Z' || c == 'A') {
+      return String(value * motion_compensation);
+    } else {
+      return String(value);
+    }
   } else {
-    if(c == 'F') return 1000;
-    else return 0;
+    if (c == 'F') return String("1000");
+    else {
+      return "";
+    }
   }
 }
-
-

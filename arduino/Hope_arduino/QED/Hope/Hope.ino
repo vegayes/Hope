@@ -82,10 +82,10 @@ Drawing draw = Drawing();
 void setup() {
   Serial.begin(BAUD_RATE);
   Serial.println("시리얼을 보냄....");
-  set_StepperSetting(X_Stepper, 10000, 550);  // 1200, 1250
-  set_StepperSetting(Y_Stepper, 10000, 550);  // 2200 ,1800
-  set_StepperSetting(Z_Stepper, 10000, 550);  // 8000, 8000
-  set_StepperSetting(A_Stepper, 10000, 550);  // 500, 500
+  set_StepperSetting(X_Stepper, 3000, 1000);  // 1200, 1250
+  set_StepperSetting(Y_Stepper, 3000, 1000);  // 2200 ,1800
+  set_StepperSetting(Z_Stepper, 3000, 1000);  // 8000, 8000
+  set_StepperSetting(A_Stepper, 3000, 1000);  // 500, 500
 
   LSwitchX.setDebounceTime(50);
   LSwitchY.setDebounceTime(50);
@@ -249,7 +249,7 @@ void mainFunction() {
 /*
    G코드 인식
 */
-double time = 3;  // 도달하는 데 걸리는 시간
+double time = 0.2;  // 도달하는 데 걸리는 시간
 void GCodeFunction() {
   // CalculateAccelStepper calc = CalculateAccelStepper();
   getG = GCode.get('G').equals("") ? 0 : GCode.get('G').toDouble();
@@ -279,13 +279,15 @@ void GCodeFunction() {
   speedX = dx / time;
   speedY = dy / time;
   speedZ = dz / time;
+  double maxSpeed = max(abs(speedX), max(abs(speedY), abs(speedZ)));
+  double portion = maxSpeed / max(Steppers.getMaxSpeed('x'), max(Steppers.getMaxSpeed('y'), Steppers.getMaxSpeed('z')));
   xp = abs(dx) / maxMove;
   yp = abs(dy) / maxMove;
   zp = abs(dz) / maxMove;
-  Steppers.setSpeed('x', speedX);
-  Steppers.setSpeed('y', speedY);
-  Steppers.setSpeed('z', speedZ);
-
+  Steppers.setSpeed('x', speedX / portion);
+  Steppers.setSpeed('y', speedY / portion);
+  Steppers.setSpeed('z', speedZ / portion);
+  Serial.println((String) "<c> Xspeed : " + speedX / portion + " Yspeed : " + speedY / portion + " Zspeed : " + speedZ / portion);
 
   Steppers.doGCode = true;
 }

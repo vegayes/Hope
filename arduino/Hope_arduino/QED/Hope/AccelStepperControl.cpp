@@ -82,6 +82,19 @@ void AccelStepperControl::run() {
   _A_stepper.run();
 }
 
+void AccelStepperControl::run(char axis) {
+  axis = tolower(axis);
+  if (axis == 'x') {
+    _X_stepper.run();
+  } else if (axis == 'y') {
+    _Y_stepper.run();
+  } else if (axis == 'z') {
+    _Z_stepper.run();
+  } else if (axis == 'a') {
+    _A_stepper.run();
+  }
+}
+
 void AccelStepperControl::runSpeed() {
   _X_stepper.runSpeed();
   _Y_stepper.runSpeed();
@@ -245,6 +258,21 @@ double AccelStepperControl::getSpeed(char axis) {
     speed = _A_stepper.speed();
   }
   return speed;
+}
+
+double AccelStepperControl::getMaxSpeed(char axis) {
+  axis = tolower(axis);
+  double maxSpeed;
+  if (axis == 'x') {
+    maxSpeed = _X_stepper.maxSpeed();
+  } else if (axis == 'y') {
+    maxSpeed = _Y_stepper.maxSpeed();
+  } else if (axis == 'z') {
+    maxSpeed = _Z_stepper.maxSpeed();
+  } else if (axis == 'a') {
+    maxSpeed = _A_stepper.maxSpeed();
+  }
+  return maxSpeed;
 }
 
 double AccelStepperControl::currentPos(char axis) {

@@ -2,6 +2,7 @@ import re
 import time
 
 from PyQt5 import QtWidgets, Qt
+from PyQt5.QtCore import QTimer, QTime
 from PyQt5.QtGui import QColor, QTextCharFormat, QTextCursor, QTextBlockFormat
 from PyQt5.QtWidgets import *
 
@@ -19,6 +20,8 @@ class G_code_hope:
         self.ui = ui
         self.currentFile = None
         self.previous_color = None
+        self.previous_time = 0
+        self.tick = 0
 
         self.pbar = Hope_ProgressBar.ProgressBar_Hope(main, ui)
         self.progressThread = progressbar.ProGressBar_Thread(self.main, self.ui)
@@ -26,11 +29,17 @@ class G_code_hope:
         self.progressThread.read.connect(self.ui.G_code_read.setText)
         self.progressThread.change.connect(self.change_text)
         self.progressThread.add.connect(self.add_text)
+        self.progressThread.end.connect(self.Auto_stop)
 
         self.ui.File_open_button.clicked.connect(self.open_button)
         self.ui.Auto_start_button.clicked.connect(self.Auto_start)
         self.ui.Auto_stop_button.clicked.connect(self.Auto_stop)
         self.ui.Option_form_button.clicked.connect(self.openHope2)
+
+        self.timer = QTimer()
+        self.ui.Timer_number.display('00:00')
+        self.timer.setInterval(1)
+        self.timer.timeout.connect(self.update_time)
 
     def openHope2(self):
         self.window2 = QtWidgets.QDialog()
@@ -39,12 +48,18 @@ class G_code_hope:
         self.window2.show()
         self.ui2.Option_Setting_Button.clicked.connect(self.option_setting_button)
 
-    def change_text(self, line):
+    def change_text(self, line:str, time):
         # 텍스트를 추가하고 서식을 변경합니다.
+        self.line = f"{line} "
+        self.time = f"[ {time:.3f} sec ]\n"
+
         self.ui.G_code_read.undo()
         self.ui.G_code_read.moveCursor(QTextCursor.End)
         self.ui.G_code_read.setTextColor(QColor("green"))
-        self.ui.G_code_read.append(line)
+        self.ui.G_code_read.insertPlainText(self.line)
+        self.ui.G_code_read.setTextColor(QColor("blue"))
+        self.ui.G_code_read.insertPlainText(self.time)
+        self.ui.G_code_read.moveCursor(QTextCursor.End)
 
     def add_text(self, line):
         self.ui.G_code_read.setTextColor(QColor("red"))
@@ -144,6 +159,10 @@ class G_code_hope:
                     self.progressThread = progressbar.ProGressBar_Thread(self.main, self.ui)
                     self.progressThread.pbar.connect(self.pbar.setValue)
                     self.progressThread.read.connect(self.ui.G_code_read.setText)
+                    self.progressThread.change.connect(self.change_text)
+                    self.progressThread.add.connect(self.add_text)
+                    self.progressThread.end.connect(self.Auto_stop)
+                self.reset_timer()
 
         # if fname[0]:
         #     f = open(fname[0], 'r', encoding='UTF8')
@@ -169,6 +188,23 @@ class G_code_hope:
         #         self.ui.G_code_upload.append("G01 Z0 A0")  # Z A 원점 복귀
         #         self.ui.G_code_upload.append("M30")  # 끝내기
 
+    def reset_timer(self):
+        self.timer.stop()
+        self.previous_time = 0
+        self.tick = 0
+        self.ui.Timer_number.display("00:00")
+
+    def update_time(self):
+        self.tick += 1
+        if self.tick == 1000 :
+            current_time = self.previous_time + 1
+            self.previous_time = current_time
+
+            minutes, seconds = divmod(current_time, 60)
+            time_str = '{:02d}:{:02d}'.format(minutes, seconds)
+            self.ui.Timer_number.display(time_str)
+            self.tick = 0
+
     def Auto_start(self):  # Auto Start 버튼을 누르면 텍스트 값이 이동을 함.
         self.main.statusBar().showMessage("AUTO START")
         self.arduino = self.main.arduino
@@ -183,6 +219,8 @@ class G_code_hope:
             self.progressThread.reRun()
             print("다시 시작합니다.")
 
+        self.timer.start()
+
     def Auto_stop(self):
         self.arduino = self.main.arduino
         self.progressThread.runPause()
@@ -190,6 +228,7 @@ class G_code_hope:
         self.main.statusBar().showMessage("S T O P")
         print("중단 합니다.")
         self.progressThread.runPause()
+        self.timer.stop()
 
     def option_setting_button(self):
         global data

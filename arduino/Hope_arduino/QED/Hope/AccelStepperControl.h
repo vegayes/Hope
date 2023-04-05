@@ -19,6 +19,7 @@ public:
 
   /// X, Y, Z, A축의 모터를 run을 호출합니다.
   void run();
+  void run(char axis);
 
   void runSpeed();
   void runSpeed(char axis);
@@ -54,6 +55,8 @@ public:
   bool isStepperStop();
 
   double getSpeed(char axis);
+
+  double getMaxSpeed(char axis);
 
   /// 해당 축의 현재 위치를 반환합니다.
   double currentPos(char axis);
