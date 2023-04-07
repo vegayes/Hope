@@ -54,6 +54,14 @@ class ProGressBar_Thread(QThread):
             if self.stop:
                 break
 
+        while not self.receiveDate.can_G:
+            time.sleep(0.05)
+            if self.stop:
+                break
+        while not self.running:
+            time.sleep(0.05)
+            if self.stop:
+                break
         self.endTime = time.time()
         self.change.emit(self.line, self.endTime - self.startTime)
         self.end.emit()

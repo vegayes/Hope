@@ -53,13 +53,13 @@ class ReceiveData(QThread):
         value = text[text.find(':') + 1:]
 
         if axis == 'X':
-            self.pos.set_x_position(float(value) / 100)
+            self.pos.set_x_position(float(value) / 200)       # motion_compensation 200 값
         elif axis == 'Y':
-            self.pos.set_y_position(float(value) / 100)
+            self.pos.set_y_position(float(value) / 200)
         elif axis == 'Z':
-            self.pos.set_z_position(float(value) / 100)
+            self.pos.set_z_position(float(value) / 200)
         elif axis == 'A':
-            self.pos.set_a_position(float(value) / 100)
+            self.pos.set_a_position(float(value))
 
     def progress_print(self, text):
         # GCode 한줄이 완성되었을 때
