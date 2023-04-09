@@ -48,7 +48,6 @@ class ProGressBar_Thread(QThread):
             self.add.emit(self.line)
             self.startTime = time.time()
 
-
             self.receiveDate.can_G = False
 
             if self.stop:

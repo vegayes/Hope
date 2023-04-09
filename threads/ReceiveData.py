@@ -59,7 +59,7 @@ class ReceiveData(QThread):
         elif axis == 'Z':
             self.pos.set_z_position(float(value) / 200)
         elif axis == 'A':
-            self.pos.set_a_position(float(value))
+            self.pos.set_a_position(float(value) / 4)
 
     def progress_print(self, text):
         # GCode 한줄이 완성되었을 때

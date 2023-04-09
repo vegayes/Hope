@@ -68,7 +68,7 @@ class G_code_hope:
         fname = QFileDialog.getOpenFileName(self.main, 'Open file', './')
         print(type(fname), fname)
         self.arduino = self.main.arduino
-        self.arduino.send_data("Stop\n")
+        self.arduino.send_data("NewFileOpen\n")
 
         if fname[0]:
             f = open(fname[0], 'r', encoding='UTF8')
@@ -160,30 +160,6 @@ class G_code_hope:
                     self.progressThread.add.connect(self.add_text)
                     self.progressThread.end.connect(self.Auto_stop)
                 self.reset_timer()
-
-        # if fname[0]:
-        #     f = open(fname[0], 'r', encoding='UTF8')
-        #     with f:
-        #         data = f.read()
-        #         data = data[:-4]  # 맨 마지막 줄 없애기 M30
-        #         # data = data.replace('M30', '') # M30지우기 but
-        #
-        #         # Todo 여기중 하나가 작동되어 새로운 시작 가능 이건 나중에 추후 차근히 해보자고
-        #         if self.progressThread.isRunning():
-        #             self.progressThread.runPause()
-        #             self.progressThread.runBreak()
-        #             # self.progressThread.reset()
-        #             self.progressThread.requestInterruption()
-        #             self.progressThread.terminate()
-        #             self.progressThread.wait()
-        #             self.progressThread.reset()
-        #             self.progressThread = progressbar.ProGressBar_Thread(self.main, self.ui)
-        #             self.progressThread.reset()
-        #
-        #         self.ui.G_code_upload.setText(data)
-        #         self.ui.G_code_upload.append("G01 X0 Y0 Z10 A90")  # X Y 원점 복귀 혹시 몰라서 A축이랑 Z축 그려지지 않게 올림.
-        #         self.ui.G_code_upload.append("G01 Z0 A0")  # Z A 원점 복귀
-        #         self.ui.G_code_upload.append("M30")  # 끝내기
 
     def reset_timer(self):
         self.timer.stop()
