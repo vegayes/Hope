@@ -11,6 +11,9 @@ from PyQt5.QtWidgets import QLCDNumber
 
 from Hope2_UI import Ui_HOPE2
 
+# from PyQt5 import QtWebEngineWidgets
+# from PyQt5.QtWebEngineWidgets import QWebEngineView
+
 class Ui_HOPE(object):
 
     def openHope2(self):
@@ -327,6 +330,11 @@ class Ui_HOPE(object):
         self.Timer_number.setObjectName("Timer_number")
         self.Timer_label = QtWidgets.QLabel(HOPE)
         self.Timer_label.setGeometry(QtCore.QRect(1110, 30, 61, 31))
+
+        # self.webEngineView = QWebEngineView(HOPE)  # 추가
+        # self.webEngineView.setGeometry(QtCore.QRect(840, 110, 691, 541))
+        # self.webEngineView.setUrl(QtCore.QUrl("https://nraynaud.github.io/webgcode/"))
+        # self.webEngineView.setObjectName("webEngineView")
 
         self.retranslateUi(HOPE)
         QtCore.QMetaObject.connectSlotsByName(HOPE)
