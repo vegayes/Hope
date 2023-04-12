@@ -9,10 +9,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QLCDNumber
 
+# from PyQt5.QtCore import*
+
 from Hope2_UI import Ui_HOPE2
 
-# from PyQt5 import QtWebEngineWidgets
+from PyQt5 import QtWebEngineWidgets
 # from PyQt5.QtWebEngineWidgets import QWebEngineView
+
+
 
 class Ui_HOPE(object):
 
@@ -23,7 +27,7 @@ class Ui_HOPE(object):
         self.window.show()
     def setupUi(self, HOPE):
         HOPE.setObjectName("HOPE")
-        HOPE.resize(1477, 844)
+        HOPE.resize(2000, 844)
         # HOPE.setStyleSheet("background-color: #ebffef;")
         self.serial_port_combo = QtWidgets.QComboBox(HOPE)
         self.serial_port_combo.setGeometry(QtCore.QRect(164, 74, 241, 21))
@@ -305,16 +309,16 @@ class Ui_HOPE(object):
         self.Option_form_button.setCheckable(False)
         self.Option_form_button.setObjectName("Option_form_button")
         self.G_code_upload = QtWidgets.QTextEdit(HOPE)
-        self.G_code_upload.setGeometry(QtCore.QRect(550, 160, 361, 600))
+        self.G_code_upload.setGeometry(QtCore.QRect(550, 160, 320, 600))
         self.G_code_upload.setObjectName("G_code_upload")
         # self.G_code_upload.setEnabled(False)
         self.G_code_read = QtWidgets.QTextEdit(HOPE)
-        self.G_code_read.setGeometry(QtCore.QRect(950, 160, 361, 600))
+        self.G_code_read.setGeometry(QtCore.QRect(890, 160, 320, 600))
         self.G_code_read.setObjectName("G_code_read")
         # self.G_code_read.setReadOnly(True)
         # self.G_code_read.setEnabled(False)
         self.G_code_progressBar = QtWidgets.QProgressBar(HOPE)
-        self.G_code_progressBar.setGeometry(QtCore.QRect(550, 780, 760, 33))
+        self.G_code_progressBar.setGeometry(QtCore.QRect(550, 780, 665, 33))
         self.G_code_progressBar.setProperty("value", 0)
         self.G_code_progressBar.setObjectName("G_code_progressBar")
 
@@ -331,10 +335,10 @@ class Ui_HOPE(object):
         self.Timer_label = QtWidgets.QLabel(HOPE)
         self.Timer_label.setGeometry(QtCore.QRect(1110, 30, 61, 31))
 
-        # self.webEngineView = QWebEngineView(HOPE)  # 추가
-        # self.webEngineView.setGeometry(QtCore.QRect(840, 110, 691, 541))
-        # self.webEngineView.setUrl(QtCore.QUrl("https://nraynaud.github.io/webgcode/"))
-        # self.webEngineView.setObjectName("webEngineView")
+        self.webEngineView = QtWebEngineWidgets.QWebEngineView(HOPE)    # 추가
+        self.webEngineView.setGeometry(QtCore.QRect(1230, 200, 680, 520))
+        self.webEngineView.setUrl(QtCore.QUrl("https://nraynaud.github.io/webgcode/"))
+        self.webEngineView.setObjectName("webEngineView")
 
         self.retranslateUi(HOPE)
         QtCore.QMetaObject.connectSlotsByName(HOPE)
