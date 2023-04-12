@@ -19,7 +19,7 @@ class ProGressBar_Thread(QThread):
         self.line = None
         self.main = parent
         self.ui = ui
-        self.running = True
+        self.running = False
         self.lines = None
         self.stop = False
         self.startTime = 0
@@ -30,10 +30,11 @@ class ProGressBar_Thread(QThread):
         for i, Gline in enumerate(self.lines):
             while not self.receiveDate.can_G:
                 time.sleep(0.05)
-                if self.stop:
-                    break
-            while not self.running:
-                time.sleep(0.05)
+                if self.running:
+                    resend = self.line
+                    resend = "<G>" + resend + ";\n"
+                    self.main.arduino.send_data(resend)
+                    self.running = False
                 if self.stop:
                     break
 
@@ -57,13 +58,12 @@ class ProGressBar_Thread(QThread):
             time.sleep(0.05)
             if self.stop:
                 break
-        while not self.running:
-            time.sleep(0.05)
-            if self.stop:
-                break
         self.endTime = time.time()
         self.change.emit(self.line, self.endTime - self.startTime)
         self.end.emit()
+        self.running = False
+        self.stop = False
+        self.receiveDate.can_G = False
 
     # 필수 호출 함수
     def setText(self, lines: list):
@@ -81,7 +81,7 @@ class ProGressBar_Thread(QThread):
     def reset(self):
         self.running = False
         self.stop = False
-        self.receiveDate.can_G = True
+        self.receiveDate.can_G = False
         self.pbar.emit(0)
         self.read.emit("")
         time.sleep(0.3)
