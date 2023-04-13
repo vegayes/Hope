@@ -71,6 +71,7 @@ def main():
     Window = UI_Window()
     Window.setWindowTitle("HOPE")
     Window.show()
+    # Window.showMaximized()
     sys.exit(app.exec_())
 
 

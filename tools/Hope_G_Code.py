@@ -292,7 +292,8 @@ class G_code_hope:
             print("up_move_y :" + str(up_move_y))
 
             # Z의 시작점.
-            a_move_start_z = int(height) - over_z
+            # a_move_start_z = int(height) - over_z
+            a_move_start_z = 10
             print("a_move_start_z :" + str(a_move_start_z))
 
             #업로드 된 G코드 text에 가져오기.
