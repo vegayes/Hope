@@ -82,7 +82,7 @@ class Ui_HOPE(object):
         #                                "border-radius: 5px")
         self.connect_button.setObjectName("connect_button")
         self.Quit_button = QtWidgets.QPushButton(HOPE)
-        self.Quit_button.setGeometry(QtCore.QRect(1700, 60, 140, 80))
+        self.Quit_button.setGeometry(QtCore.QRect(1780, 30, 120, 150))
         font = QtGui.QFont()
         font.setFamily("Agency FB")
         font.setPointSize(20)

@@ -32,7 +32,7 @@ class ProGressBar_Thread(QThread):
                 time.sleep(0.05)
                 if self.running:
                     resend = self.line
-                    resend = "<G>" + resend + ";\n"
+                    resend = "<G>" + str(resend) + ";\n"
                     self.main.arduino.send_data(resend)
                     self.running = False
                 if self.stop:

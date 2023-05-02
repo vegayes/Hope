@@ -70,8 +70,8 @@ def main():
     app = QtWidgets.QApplication(sys.argv)
     Window = UI_Window()
     Window.setWindowTitle("HOPE")
-    Window.show()
-    # Window.showMaximized()
+    # Window.show()
+    Window.showMaximized()
     sys.exit(app.exec_())
 
 
