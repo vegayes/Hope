@@ -144,9 +144,13 @@ class G_code_hope:
                 # 원점 복귀 추가 코드들
                 self.ui.G_code_upload.append("-" * 25)  # 경계 값 확인하려고 넣어둠.
                 self.ui.G_code_upload.append("G04 P1500")  # 1.5초 기다림.
-                self.ui.G_code_upload.append("G01 X0 Y0 Z50 F500")  # X Y 원점 복귀 혹시 몰라서 A축이랑 Z축 그려지지 않게 올림. ** A는 필요없음.
+                self.ui.G_code_upload.append("G01 X0 Y0 Z20 F500")  # X Y 원점 복귀 혹시 몰라서 A축이랑 Z축 그려지지 않게 올림. ** A는 필요없음.
+                # self.ui.G_code_upload.append("G01 Y0 F500")
+                # self.ui.G_code_upload.append("G01 X0 Z20 F500")
                 self.ui.G_code_upload.append("G04 P1500")  # 1.5초 기다림.
-                self.ui.G_code_upload.append("G01 Z0 A0 F500")  # Z A 원점 복귀
+                # self.ui.G_code_upload.append("G01 Z0 A0 F500")  # Z A 원점 복귀
+                self.ui.G_code_upload.append("G01 A0 F500")
+                self.ui.G_code_upload.append("G01 Z0 F500")
                 self.ui.G_code_upload.append("M30")  # 끝내기 *=>18로 바뀔 수 있음
 
                 if self.progressThread.isRunning():
@@ -383,8 +387,8 @@ class G_code_hope:
             # 1) 벽면 위치 값의 a의 길이( 30으로 잡음) 이 부분부터 A 90도 움직임. // 예로들어 해당 y로 가는 위치 값 전에 A는 45도를 유지를 그 줄에 추가해줌!( 같이 움직어야 그림이 그려짐. )
 
             # A를 돌릴 y의 위치
-            # a_move_start_y = int(y_text) - a_length  - over_y  # 구조물 y위치 값 - a의 길이 - (오차값)
-            a_move_start_y = int(y_text) - 35
+            # a_move_start_y = int(y_text) - a_length (약 55)  - over_y  # 구조물 y위치 값 - a의 길이 - (오차값)
+            a_move_start_y = int(y_text) - 85
             print("a_move_start_y :" + str(a_move_start_y))
 
             # A를 직접 그릴 수 있게 조정하는 위치  / Y를 down
@@ -398,7 +402,7 @@ class G_code_hope:
 
             # Z의 시작점.
             # a_move_start_z = int(height) - over_z
-            a_move_start_z = 10
+            a_move_start_z = 0
             print("a_move_start_z :" + str(a_move_start_z))
 
             #업로드 된 G코드 text에 가져오기.
@@ -459,19 +463,28 @@ class G_code_hope:
             print(new_string)
 
 
-
-
-
             # 벽면에만 바로 그림 그리는 경우
             self.ui.G_code_upload.setText("새로운 값\n" + new_string) # data값 업로드
             self.ui.G_code_read.setText("")
             cursor = self.ui.G_code_upload.textCursor()  # 커서 위치 가져오기
             cursor.movePosition(QtGui.QTextCursor.Start)  # 커서를 텍스트 시작 위치로 이동
             self.ui.G_code_upload.setTextCursor(cursor)  # 커서 위치 설정
+            # self.ui.G_code_upload.insertPlainText("G01 Y{} Z10\n".format(a_move_start_y))
+
+            #위치 파악하기 위한 시도 값.
             self.ui.G_code_upload.insertPlainText("G01 Y0 Z10\n")
             self.ui.G_code_upload.insertPlainText("G04 P1500\n")
             self.ui.G_code_upload.insertPlainText("G01 A90\n")
+            self.ui.G_code_upload.insertPlainText("G01 Y{}\n".format(down_move_y))
+            self.ui.G_code_upload.insertPlainText("G04 P1500\n")
+            # self.ui.G_code_upload.insertPlainText("G01 X00 Z{}\n".format(a_move_start_z))
+            #**************************** 시작 준비 값 ************************************
+            # self.ui.G_code_upload.insertPlainText("G01 Y0 Z10\n")
+            self.ui.G_code_upload.insertPlainText("G01 Y{} Z10\n".format(a_move_start_y))
+            self.ui.G_code_upload.insertPlainText("G04 P1500\n")
+            self.ui.G_code_upload.insertPlainText("G01 A90\n")
             self.ui.G_code_upload.insertPlainText("G01 X00 Z{}\n".format(a_move_start_z))
+            self.ui.G_code_upload.insertPlainText("G01 Y{}\n".format(down_move_y))
             # self.ui.G_code_upload.insertPlainText("G01 Y{}\n".format(a_move_start_y))
             # self.ui.G_code_upload.insertPlainText("G01 Y{}\n".format(down_move_y)) *********
             # self.ui.G_code_upload.insertPlainText("G01 X0 Y{} Z{}\n".format(down_move_y, a_move_start_z))  # x를 원점으로 잡을거야?
@@ -483,8 +496,11 @@ class G_code_hope:
             self.ui.G_code_upload.append("G01 Y{} ".format(up_move_y))
             self.ui.G_code_upload.append("G01 Z10")
             self.ui.G_code_upload.append("G04 P1500")
+            # self.ui.G_code_upload.append("G01 A0")
+            # self.ui.G_code_upload.append("G01 X0 Y0 Z0")
             self.ui.G_code_upload.append("G01 A0")
-            self.ui.G_code_upload.append("G01 X0 Y0 Z0")
+            self.ui.G_code_upload.append("G01 X0 ")
+            self.ui.G_code_upload.append("G01 Y0 Z0")
 
             # self.ui.G_code_upload.append("G01 Z{}".format(height))
             # self.ui.G_code_upload.append("G01 X0 Y{}".format(y_text))

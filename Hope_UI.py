@@ -28,7 +28,7 @@ class Ui_HOPE(object):
     def setupUi(self, HOPE):
         HOPE.setObjectName("HOPE")
         HOPE.resize(1950, 990)
-        # HOPE.setStyleSheet("background-color: #ebffef;")
+        # HOPE.setStyleSheet("background-color: #FF99D6;")
         self.serial_port_combo = QtWidgets.QComboBox(HOPE)
         self.serial_port_combo.setGeometry(QtCore.QRect(164, 80, 241, 35))
         font = QtGui.QFont()
@@ -379,8 +379,36 @@ class Ui_HOPE(object):
         font = QtGui.QFont()
         font.setFamily("Agency FB")
         font.setPointSize(20)
+        font.setBold(True)
         self.Timer_label.setFont(font)
-        self.Timer_label.setGeometry(QtCore.QRect(1060, 80, 100, 50))
+        self.Timer_label.setGeometry(QtCore.QRect(1060, 80, 130, 50))
+
+        # 타이틀 이름
+        self.Title_label = QtWidgets.QLabel(HOPE)
+        self.Title_label.setGeometry(QtCore.QRect(570, 0, 851, 71))
+        font = QtGui.QFont()
+        font.setFamily("Agency FB")
+        font.setPointSize(26)
+        font.setBold(True)
+        font.setWeight(75)
+        self.Title_label.setFont(font)
+        # self.Title_label.setStyleSheet("color: #303AF4;" )
+        self.Title_label.setObjectName("Title_label")
+
+
+        # 저자 이름
+        self.Name_label = QtWidgets.QLabel(HOPE)
+        self.Name_label.setGeometry(QtCore.QRect(1200, 40, 600, 150))
+        font = QtGui.QFont()
+        font.setFamily("Agency FB")
+        font.setPointSize(22)
+        # font.setBold(True)
+        font.setWeight(75)
+        self.Name_label.setFont(font)
+        # self.Name_label.setStyleSheet("color: #3c549e;")
+        self.Name_label.setObjectName("Name_label")
+
+
 
         self.webEngineView = QtWebEngineWidgets.QWebEngineView(HOPE)    # 추가
         self.webEngineView.setGeometry(QtCore.QRect(1260, 205, 640, 720))
@@ -394,6 +422,7 @@ class Ui_HOPE(object):
     def retranslateUi(self, HOPE):  # 버튼 및 객체들 선언하는 부분?
         _translate = QtCore.QCoreApplication.translate
         HOPE.setWindowTitle(_translate("HOPE", "Hybrid Optimum Printer Engineering"))
+        # HOPE.setWindowTitle(_translate("HOPE", "Design of GUI-based 4-Axis Control System using Python"))
         self.refresh_ports_button.setText(_translate("HOPE", "Refresh ports"))
         self.Quit_button.setText(_translate("HOPE", "Quit"))
         self.serial_port_label.setText(_translate("HOPE",
@@ -430,6 +459,9 @@ class Ui_HOPE(object):
         self.Auto_stop_button.setText(_translate("HOPE", "Auto Stop"))
         self.Option_form_button.setText(_translate("HOPE", "G_code\ntransfer\noption"))
         self.Timer_label.setText(_translate("HOPE", "[  Timer  ]"))
+        self.Title_label.setText(_translate("HOPE", "Design of GUI-based 4-Axis Control System using Python"))
+        # self.Name_label.setText(_translate("HOPE", "\n \tHyeon-Ji Jang · Seung-bum Park \n       Ji-Won Kim · Eun-Seo You · Dong-Wuk Yi "))
+        self.Name_label.setText(_translate("HOPE", "\n \tHyeon-Ji Jang · Seung-bum Park \n       Ji-Won Kim · Eun-Seo You ·  "))
 
 
 
