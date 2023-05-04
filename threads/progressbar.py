@@ -27,6 +27,7 @@ class ProGressBar_Thread(QThread):
 
     def run(self):
         self.receiveDate = self.main.arduino.getReceiveDateThread()
+        self.receiveDate.can_G = True
         for i, Gline in enumerate(self.lines):
             while not self.receiveDate.can_G:
                 time.sleep(0.05)
